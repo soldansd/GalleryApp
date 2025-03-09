@@ -22,6 +22,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // This delegate does not imply the connecting scene or session are new
         // (see `application:configurationForConnectingSceneSession` instead).
         guard let windowScene = (scene as? UIWindowScene) else { return }
+        NetworkManager.shared.getListPhotos(page: 1, perPage: 30) { result in
+            print("Completion")
+            switch result {
+            case .success(let array):
+                print()
+                print()
+                print()
+                print(array)
+            case .failure(let error):
+                print(error)
+            }
+        }
+        
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
