@@ -11,15 +11,24 @@ protocol GalleryViewProtocol: AnyObject {
     func update()
 }
 
-final class GalleryViewController: UIViewController, GalleryViewProtocol, UITableViewDataSource {
+final class GalleryViewController: UIViewController, GalleryViewProtocol {
     
     let presenter: GalleryPresenterProtocol
     
-    private lazy var tableView: UITableView = {
-        let table = UITableView()
-        table.dataSource = self
-        table.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
-        return table
+    private lazy var collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        layout.minimumLineSpacing = 0
+        
+        let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collection.dataSource = self
+        collection.delegate = self
+        collection.register(
+            GalleryPhotoCollectionViewCell.self,
+            forCellWithReuseIdentifier: GalleryPhotoCollectionViewCell.reuseIdentifier
+        )
+
+        return collection
     }()
     
     init(presenter: GalleryPresenterProtocol) {
@@ -31,37 +40,70 @@ final class GalleryViewController: UIViewController, GalleryViewProtocol, UITabl
         view.backgroundColor = .white
         presenter.viewDidLoad()
         
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(collectionView)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
     }
     
     required init?(coder: NSCoder) { nil }
     
     func update() {
-        tableView.reloadData()
+        collectionView.reloadData()
     }
 }
 
-extension GalleryViewController {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+extension GalleryViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         presenter.photos.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         
-        var config = cell.defaultContentConfiguration( )
-        config.text = presenter.photos[indexPath.row].userName
-        config.secondaryText = presenter.photos[indexPath.row].imageURL
+        let id = GalleryPhotoCollectionViewCell.reuseIdentifier
+        let reusableCell = collectionView.dequeueReusableCell(withReuseIdentifier: id, for: indexPath)
+        let cell = reusableCell as? GalleryPhotoCollectionViewCell
+        
+        cell?.configure(with: UIImage(systemName: "picture"))
+        
+        let photo = presenter.photos[indexPath.item]
+        
+        NetworkManager.shared.getImage(from: photo.imageURL) { result in
+            guard case .success(let data) = result else {
+                return
+            }
+            
+            let image = UIImage(data: data)
+            
+            DispatchQueue.main.async {
+                cell?.configure(with: image)
+            }
+        }
+        
+        return cell ?? UICollectionViewCell()
+    }
+}
+
+extension GalleryViewController: UICollectionViewDelegateFlowLayout {
     
-        cell.contentConfiguration = config
+    func collectionView(
+        _ collectionView: UICollectionView,
+        layout collectionViewLayout: UICollectionViewLayout,
+        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
+        let screenWidth = UIScreen.main.bounds.width
+        let photo = presenter.photos[indexPath.item]
         
-        return cell
+        let aspectRatio = CGFloat(photo.height) / CGFloat(photo.width)
+        let cellHeight = screenWidth * aspectRatio
+        
+        return CGSize(width: screenWidth, height: cellHeight)
     }
 }
