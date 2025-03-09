@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class CacheManager {
+final class CacheManager: CacheManagerProtocol {
     
     static let shared = CacheManager()
     

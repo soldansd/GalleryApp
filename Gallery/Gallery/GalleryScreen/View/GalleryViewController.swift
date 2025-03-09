@@ -77,6 +77,9 @@ extension GalleryViewController: UICollectionViewDataSource {
         
         if let data = CacheManager.shared.getImageData(forKey: photo.id) {
             cell?.configure(with: UIImage(data: data))
+            if (0...2).contains(indexPath.item) {
+                try? StorageManager.shared.saveData(data, forKey: "\(photo.id).jpg")
+            }
         } else {
             NetworkManager.shared.getImage(from: photo.imageURL) { result in
                 guard case .success(let data) = result else {
