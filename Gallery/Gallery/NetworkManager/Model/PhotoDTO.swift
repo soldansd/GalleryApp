@@ -17,7 +17,7 @@ struct PhotoDTO: Decodable {
     let color: String
     let blurHash: String
     let isLikedByUser: Bool
-
+    
     private enum CodingKeys: String, CodingKey {
         case id
         case urls
@@ -34,7 +34,7 @@ struct PhotoDTO: Decodable {
         }
         
         enum User: String, CodingKey {
-            case username
+            case name
         }
     }
     
@@ -53,6 +53,23 @@ struct PhotoDTO: Decodable {
         imageURL = try urlsContainter.decode(String.self, forKey: .small)
         
         let userContainer = try container.nestedContainer(keyedBy: CodingKeys.User.self, forKey: .user)
-        userName = try userContainer.decode(String.self, forKey: .username)
+        userName = try userContainer.decode(String.self, forKey: .name)
+    }
+}
+
+extension PhotoDTO {
+    
+    func toModel() -> Photo {
+        return Photo(
+            id: self.id,
+            imageURL: self.imageURL,
+            userName: self.userName,
+            description: self.description,
+            width: self.width,
+            height: self.height,
+            color: self.color,
+            blurHash: self.blurHash,
+            isLikedByUser: self.isLikedByUser
+        )
     }
 }
