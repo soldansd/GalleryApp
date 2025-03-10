@@ -7,7 +7,7 @@
 *.xcscmblueprint
 *.xccheckout
 *.xcodeproj/xcuserdata/
-*.xcworkspace/xcuserdata/
+**/*.xcworkspace/xcuserdata/
 DerivedData/
 .idea/
 
