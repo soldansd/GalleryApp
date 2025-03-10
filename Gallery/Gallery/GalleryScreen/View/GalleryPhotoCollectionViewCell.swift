@@ -11,6 +11,8 @@ class GalleryPhotoCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "GalleryPhotoCollectionViewCell"
     
+    var photoId: String = ""
+    
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFill

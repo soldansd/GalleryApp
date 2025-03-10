@@ -73,23 +73,28 @@ extension GalleryViewController: UICollectionViewDataSource {
         
         let id = GalleryPhotoCollectionViewCell.reuseIdentifier
         let reusableCell = collectionView.dequeueReusableCell(withReuseIdentifier: id, for: indexPath)
-        let cell = reusableCell as? GalleryPhotoCollectionViewCell
+        guard let cell = reusableCell as? GalleryPhotoCollectionViewCell else {
+            return UICollectionViewCell()
+        }
         
-        cell?.configure(with: UIImage(systemName: "picture"))
+        cell.configure(with: nil)
+        cell.backgroundColor = .red
         
         let photo = presenter.photos[indexPath.item]
+        let photoId = photo.id
+        cell.photoId = photoId
         
         presenter.getImage(for: photo) { data in
-            guard let data else {
+            guard let data, cell.photoId == photoId else {
                 return
             }
             
             let image = UIImage(data: data)
             
-            cell?.configure(with: image)
+            cell.configure(with: image)
         }
         
-        return cell ?? UICollectionViewCell()
+        return cell
     }
 }
 
