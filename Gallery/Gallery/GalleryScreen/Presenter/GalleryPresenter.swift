@@ -12,14 +12,18 @@ protocol GalleryPresenterProtocol: AnyObject {
     func viewDidLoad()
     func loadNextPage()
     func getImage(for photo: Photo, completion: @escaping (Data?) -> Void)
+    func openDetailScreen(for photo: Photo)
 }
 
 final class GalleryPresenter: GalleryPresenterProtocol {
     
     weak var view: GalleryViewProtocol?
     private let router: GalleryRouterProtocol
-    private(set) var photos: [Photo] = []
     private let photoManager: PhotoPaginationManagerProtocol
+    
+    var photos: [Photo] {
+        photoManager.photos
+    }
     
     init(router: GalleryRouterProtocol, photoManager: PhotoPaginationManagerProtocol) {
         self.router = router
@@ -28,11 +32,15 @@ final class GalleryPresenter: GalleryPresenterProtocol {
     }
     
     func viewDidLoad() {
-        photoManager.loadNextPage()
+        loadNextPage()
     }
     
     func loadNextPage() {
         photoManager.loadNextPage()
+    }
+    
+    func openDetailScreen(for photo: Photo) {
+        router.openDetailScreen(for: photo)
     }
     
     func getImage(for photo: Photo, completion: @escaping (Data?) -> Void) {
@@ -49,11 +57,8 @@ final class GalleryPresenter: GalleryPresenterProtocol {
     }
     
     @objc private func handlePhotosUpdate(_ notification: Notification) {
-        if let updatedPhotos = notification.userInfo?["photos"] as? [Photo] {
-            self.photos = updatedPhotos
-            DispatchQueue.main.async { [weak self] in
-                self?.view?.update()
-            }
+        DispatchQueue.main.async { [weak self] in
+            self?.view?.update()
         }
     }
     

@@ -9,6 +9,7 @@ import UIKit
 
 protocol GalleryRouterProtocol: AnyObject {
     
+    func openDetailScreen(for photo: Photo)
 }
 
 final class GalleryRouter: GalleryRouterProtocol {
@@ -24,5 +25,10 @@ final class GalleryRouter: GalleryRouterProtocol {
     func openGalleryScreen() {
         let view = builder.assembly()
         navigationController?.pushViewController(view, animated: true)
+    }
+    
+    func openDetailScreen(for photo: Photo) {
+        let router = DetailRouter(navigationController: navigationController)
+        router.openDetailScreen(photo: photo)
     }
 }
