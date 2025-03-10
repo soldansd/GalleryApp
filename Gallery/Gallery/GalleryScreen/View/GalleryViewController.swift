@@ -75,24 +75,15 @@ extension GalleryViewController: UICollectionViewDataSource {
         
         let photo = presenter.photos[indexPath.item]
         
-        if let data = CacheManager.shared.getImageData(forKey: photo.id) {
-            cell?.configure(with: UIImage(data: data))
-            if (0...2).contains(indexPath.item) {
-                try? StorageManager.shared.saveData(data, forKey: "\(photo.id).jpg")
+        PhotoProvider.shared.getImage(for: photo) { result in
+            guard case .success(let data) = result else {
+                return
             }
-        } else {
-            NetworkManager.shared.getImage(from: photo.imageURL) { result in
-                guard case .success(let data) = result else {
-                    return
-                }
-                
-                CacheManager.shared.saveImageData(data, forKey: photo.id)
-                
-                let image = UIImage(data: data)
-                
-                DispatchQueue.main.async {
-                    cell?.configure(with: image)
-                }
+            
+            let image = UIImage(data: data)
+            
+            DispatchQueue.main.async {
+                cell?.configure(with: image)
             }
         }
         

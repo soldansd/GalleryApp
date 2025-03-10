@@ -9,8 +9,8 @@ import Foundation
 
 protocol CacheManagerProtocol {
     
-    func getImageData(forKey key: String) -> Data?
-    func saveImageData(_ data: Data, forKey key: String)
-    func removeImageData(forKey key: String)
+    func getData(forKey key: String) -> Data?
+    func saveData(_ data: Data, forKey key: String)
+    func removeData(forKey key: String)
     func clearCache()
 }

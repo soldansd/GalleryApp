@@ -1,5 +1,5 @@
 //
-//  NetworkMangerProtocol.swift
+//  NetworkManagerProtocol.swift
 //  Gallery
 //
 //  Created by Даниил Соловьев on 09/03/2025.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol NetworkMangerProtocol {
+protocol NetworkManagerProtocol {
     
     func getListPhotos(
         page: Int,

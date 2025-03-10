@@ -16,5 +16,5 @@ struct Photo {
     let height: Int
     let color: String
     let blurHash: String
-    let isLikedByUser: Bool
+    var isLikedByUser: Bool
 }

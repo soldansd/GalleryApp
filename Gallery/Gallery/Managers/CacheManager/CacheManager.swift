@@ -15,15 +15,15 @@ final class CacheManager: CacheManagerProtocol {
     
     private init() {}
     
-    func getImageData(forKey key: String) -> Data? {
+    func getData(forKey key: String) -> Data? {
         return imageCache.object(forKey: key as NSString) as Data?
     }
     
-    func saveImageData(_ data: Data, forKey key: String) {
+    func saveData(_ data: Data, forKey key: String) {
         imageCache.setObject(data as NSData, forKey: key as NSString)
     }
     
-    func removeImageData(forKey key: String) {
+    func removeData(forKey key: String) {
         imageCache.removeObject(forKey: key as NSString)
     }
     
