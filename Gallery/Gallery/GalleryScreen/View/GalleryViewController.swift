@@ -67,6 +67,10 @@ extension GalleryViewController: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         
+        if indexPath.item == presenter.photos.count - 1 {
+            presenter.loadNextPage()
+        }
+        
         let id = GalleryPhotoCollectionViewCell.reuseIdentifier
         let reusableCell = collectionView.dequeueReusableCell(withReuseIdentifier: id, for: indexPath)
         let cell = reusableCell as? GalleryPhotoCollectionViewCell
@@ -75,16 +79,14 @@ extension GalleryViewController: UICollectionViewDataSource {
         
         let photo = presenter.photos[indexPath.item]
         
-        PhotoProvider.shared.getImage(for: photo) { result in
-            guard case .success(let data) = result else {
+        presenter.getImage(for: photo) { data in
+            guard let data else {
                 return
             }
             
             let image = UIImage(data: data)
             
-            DispatchQueue.main.async {
-                cell?.configure(with: image)
-            }
+            cell?.configure(with: image)
         }
         
         return cell ?? UICollectionViewCell()

@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class PhotoPaginationManager {
+final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
     
     static let shared = PhotoPaginationManager(photoProvider: PhotoProvider.shared)
     
@@ -44,7 +44,11 @@ final class PhotoPaginationManager {
         }
     }
     
+    func getImage(for photo: Photo, completion: @escaping (Result<Data, Error>) -> Void) {
+        photoProvider.getImage(for: photo, completion: completion)
+    }
+    
     private func notifyObservers() {
-        NotificationCenter.default.post(name: .photosDidUpdate, object: nil)
+        NotificationCenter.default.post(name: .photosDidUpdate, object: nil, userInfo: ["photos": photos])
     }
 }
