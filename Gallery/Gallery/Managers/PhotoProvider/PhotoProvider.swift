@@ -7,7 +7,7 @@
 
 import Foundation
 
-class PhotoProvider: PhotoProviderProtocol {
+final class PhotoProvider: PhotoProviderProtocol {
     
     static let shared = PhotoProvider(
         storageManager: StorageManager.shared,
