@@ -19,17 +19,18 @@ class DetailViewController: UIViewController, DetailViewProtocol {
     private lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.minimumInteritemSpacing = 0
-        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 0
+        layout.estimatedItemSize = .zero
         
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.dataSource = self
         collection.delegate = self
         collection.isPagingEnabled = true
         collection.showsHorizontalScrollIndicator = false
+        collection.contentInsetAdjustmentBehavior = .never
         collection.register(
-            GalleryPhotoCollectionViewCell.self,
-            forCellWithReuseIdentifier: GalleryPhotoCollectionViewCell.reuseIdentifier
+            DetailPhotoCollectionViewCell.self,
+            forCellWithReuseIdentifier: DetailPhotoCollectionViewCell.reuseIdentifier
         )
         return collection
     }()
@@ -85,28 +86,29 @@ extension DetailViewController: UICollectionViewDataSource {
             presenter.loadNextPage()
         }
         
-        let id = GalleryPhotoCollectionViewCell.reuseIdentifier
+        let id = DetailPhotoCollectionViewCell.reuseIdentifier
         let reusableCell = collectionView.dequeueReusableCell(withReuseIdentifier: id, for: indexPath)
-        guard let cell = reusableCell as? GalleryPhotoCollectionViewCell else {
+        guard let cell = reusableCell as? DetailPhotoCollectionViewCell else {
             return UICollectionViewCell()
         }
         
-        cell.configure(with: nil)
+        let photo = presenter.photos[indexPath.item]
+        cell.configure(with: photo)
         cell.backgroundColor = .red
         
-        let photo = presenter.photos[indexPath.item]
-        let photoId = photo.id
-        cell.photoId = photoId
-        
-        presenter.getImage(for: photo) { data in
-            guard let data, cell.photoId == photoId else {
-                return
-            }
-            
-            let image = UIImage(data: data)
-            
-            cell.configure(with: image)
-        }
+//        let photo = presenter.photos[indexPath.item]
+//        let photoId = photo.id
+//        cell.photoId = photoId
+//        
+//        presenter.getImage(for: photo) { data in
+//            guard let data, cell.photoId == photoId else {
+//                return
+//            }
+//            
+//            let image = UIImage(data: data)
+//            
+//            cell.configure(with: image)
+//        }
         
         return cell
     }
@@ -119,12 +121,7 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout {
         layout collectionViewLayout: UICollectionViewLayout,
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
-        let screenWidth = UIScreen.main.bounds.width
-        let photo = presenter.photos[indexPath.item]
         
-        let aspectRatio = CGFloat(photo.height) / CGFloat(photo.width)
-        let cellHeight = screenWidth * aspectRatio
-        
-        return CGSize(width: screenWidth, height: cellHeight)
+        return CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
     }
 }
