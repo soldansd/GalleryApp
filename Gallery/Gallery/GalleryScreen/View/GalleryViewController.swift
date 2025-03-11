@@ -81,11 +81,11 @@ extension GalleryViewController: UICollectionViewDataSource {
         }
         
         cell.configure(with: nil)
-        cell.backgroundColor = .red
         
         let photo = presenter.photos[indexPath.item]
         let photoId = photo.id
         cell.photoId = photoId
+        cell.isLiked = photo.isLikedByUser
         
         presenter.getImage(for: photo) { data in
             guard let data, cell.photoId == photoId else {
