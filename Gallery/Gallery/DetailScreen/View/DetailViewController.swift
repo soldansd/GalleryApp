@@ -94,10 +94,15 @@ extension DetailViewController: UICollectionViewDataSource {
         
         let photo = presenter.photos[indexPath.item]
         cell.configure(with: photo)
-        cell.backgroundColor = .red
         
         let photoId = photo.id
         cell.photoId = photoId
+        cell.likeButtonTapped = { [weak self] in
+            self?.presenter.updateLikeStatus(photo: photo, isLiked: !photo.isLikedByUser)
+        }
+        cell.backButtonTapped = { [weak self] in
+            self?.presenter.closeDetailScreen()
+        }
         
         presenter.getImage(for: photo) { data in
             guard let data, cell.photoId == photoId else {

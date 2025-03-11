@@ -13,12 +13,15 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     
     var photoId: String = ""
     
+    var likeButtonTapped: () -> Void = { }
+    var backButtonTapped: () -> Void = { }
+    
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
+        imageView.layer.cornerRadius = 20
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.backgroundColor = .cyan
         return imageView
     }()
     
@@ -38,39 +41,33 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     
     private let backButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .systemGray
+        button.backgroundColor = .systemGray6
+        button.layer.cornerRadius = 20
+        button.clipsToBounds = true
+        button.setImage(UIImage(systemName: "chevron.left"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
     
     private let userNameLabel: UILabel = {
         let label = UILabel()
-        label.text = "Daniil Solovyev"
-        label.backgroundColor = .green
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
     private let likeButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .blue
+        button.backgroundColor = .systemGray6
+        button.layer.cornerRadius = 20
+        button.clipsToBounds = true
+        button.setImage(UIImage(systemName: "heart"), for: .normal)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
-    }()
-    
-    private let userStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.axis = .horizontal
-        stackView.backgroundColor = .orange
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        return stackView
     }()
     
     private let descriptionLabel: UILabel = {
         let label = UILabel()
         label.numberOfLines = 0
-        label.backgroundColor = .purple
-        label.text = "agfdfsdgdfhsgbnfjdhgbhjfdbgshjkbgfjhdsbgjfhkbsjhfkdgbfjdhsbgjhksdgjhbdfjkgbhk"
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
@@ -79,6 +76,9 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        backButton.addTarget(self, action: #selector(back), for: .touchUpInside)
+        likeButton.addTarget(self, action: #selector(like), for: .touchUpInside)
         
         configure()
     }
@@ -93,6 +93,10 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
         let photoWidth = contentView.bounds.width
         let photoHeight = photoWidth * aspectRatio
         imageViewHeightConstraint.constant = photoHeight
+        
+        if photo.isLikedByUser {
+            likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+        }
         
         let image = UIImage(blurHash: photo.blurHash, size: CGSize(width: photoWidth, height: photoHeight))
         imageView.image = image
@@ -113,17 +117,14 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     private func addSubviews() {
         contentView.addSubview(scrollView)
         contentView.addSubview(backButton)
+        contentView.addSubview(likeButton)
         
         scrollView.addSubview(scrollViewContent)
         
         scrollViewContent.addSubview(imageView)
         scrollViewContent.addSubview(userNameLabel)
-        scrollViewContent.addSubview(likeButton)
         scrollViewContent.addSubview(descriptionLabel)
-        scrollViewContent.addSubview(userStackView)
-        
-        userStackView.addSubview(userNameLabel)
-        userStackView.addSubview(likeButton)
+        scrollViewContent.addSubview(userNameLabel)
     }
     
     private func setupConstraints() {
@@ -145,29 +146,40 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
             imageView.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor),
             imageViewHeightConstraint,
             
-            userStackView.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
-            userStackView.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 8),
-            userStackView.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -8),
-            
-            userNameLabel.topAnchor.constraint(equalTo: userStackView.topAnchor),
-            userNameLabel.bottomAnchor.constraint(equalTo: userStackView.bottomAnchor),
-            userNameLabel.leadingAnchor.constraint(equalTo: userStackView.leadingAnchor),
-            userNameLabel.trailingAnchor.constraint(equalTo: likeButton.leadingAnchor, constant: -8),
-            
-            likeButton.topAnchor.constraint(equalTo: userStackView.topAnchor),
-            likeButton.bottomAnchor.constraint(equalTo: userStackView.bottomAnchor),
-            likeButton.trailingAnchor.constraint(equalTo: userStackView.trailingAnchor),
+            userNameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
+            userNameLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 8),
+            userNameLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -8),
             
             descriptionLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: 8),
             descriptionLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -8),
-            descriptionLabel.topAnchor.constraint(equalTo: userStackView.bottomAnchor, constant: 8),
+            descriptionLabel.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor, constant: 8),
             descriptionLabel.bottomAnchor.constraint(equalTo: scrollViewContent.bottomAnchor, constant: -8),
+            
+            likeButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 8),
+            likeButton.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -8),
+            likeButton.widthAnchor.constraint(equalToConstant: 40),
+            likeButton.heightAnchor.constraint(equalToConstant: 40),
             
             backButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 8),
             backButton.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 8),
-            backButton.widthAnchor.constraint(equalToConstant: 32),
-            backButton.heightAnchor.constraint(equalToConstant: 32)
+            backButton.widthAnchor.constraint(equalToConstant: 40),
+            backButton.heightAnchor.constraint(equalToConstant: 40)
         ])
     }
     
+    @objc private func back() {
+        backButtonTapped()
+    }
+    
+    @objc private func like() {
+        let currentImage = likeButton.image(for: .normal)
+        
+        if currentImage == UIImage(systemName: "heart") {
+            likeButton.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+        } else {
+            likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
+        }
+        
+        likeButtonTapped()
+    }
 }

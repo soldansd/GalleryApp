@@ -13,6 +13,8 @@ protocol DetailPresenterProtocol: AnyObject {
     var currentPhoto: Photo { get }
     func loadNextPage()
     func getImage(for photo: Photo, completion: @escaping (Data?) -> Void)
+    func updateLikeStatus(photo: Photo, isLiked: Bool)
+    func closeDetailScreen()
 }
 
 class DetailPresenter: DetailPresenterProtocol {
@@ -48,6 +50,14 @@ class DetailPresenter: DetailPresenterProtocol {
                 }
             }
         }
+    }
+    
+    func updateLikeStatus(photo: Photo, isLiked: Bool) {
+        photoManager.updateLikeStatus(photo: photo, isLiked: isLiked)
+    }
+    
+    func closeDetailScreen() {
+        router.closeDetailScreen()
     }
     
     @objc private func handlePhotosUpdate(_ notification: Notification) {
