@@ -90,8 +90,12 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
         descriptionLabel.text = photo.description
         
         let aspectRatio = CGFloat(photo.height) / CGFloat(photo.width)
-        let photoHeight = contentView.bounds.width * aspectRatio
+        let photoWidth = contentView.bounds.width
+        let photoHeight = photoWidth * aspectRatio
         imageViewHeightConstraint.constant = photoHeight
+        
+        let image = UIImage(blurHash: photo.blurHash, size: CGSize(width: photoWidth, height: photoHeight))
+        imageView.image = image
         
         layoutIfNeeded()
         scrollView.layoutIfNeeded()
