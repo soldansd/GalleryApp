@@ -15,12 +15,19 @@ final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
     private var nextPage = 1
     private var perPage = 30
     private(set) var photos: [Photo] = []
+    private var isLoading = false
     
     init(photoProvider: PhotoProviderProtocol) {
         self.photoProvider = photoProvider
     }
     
     func loadNextPage() {
+        guard !isLoading else {
+            return
+        }
+        
+        isLoading = true
+        
         photoProvider.getListPhotos(page: nextPage, perPage: perPage) { [weak self] result in
             guard let self else {
                 return
@@ -32,6 +39,7 @@ final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
             
             self.photos.append(contentsOf: photosPage)
             self.nextPage += 1
+            self.isLoading = false
             notifyObservers()
         }
     }

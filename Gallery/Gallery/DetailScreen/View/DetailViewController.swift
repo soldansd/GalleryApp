@@ -96,19 +96,20 @@ extension DetailViewController: UICollectionViewDataSource {
         cell.configure(with: photo)
         cell.backgroundColor = .red
         
-//        let photo = presenter.photos[indexPath.item]
-//        let photoId = photo.id
-//        cell.photoId = photoId
-//        
-//        presenter.getImage(for: photo) { data in
-//            guard let data, cell.photoId == photoId else {
-//                return
-//            }
-//            
-//            let image = UIImage(data: data)
-//            
-//            cell.configure(with: image)
-//        }
+        let photoId = photo.id
+        cell.photoId = photoId
+        
+        presenter.getImage(for: photo) { data in
+            guard let data, cell.photoId == photoId else {
+                return
+            }
+            
+            guard let image = UIImage(data: data) else {
+                return
+            }
+            
+            cell.setImage(image)
+        }
         
         return cell
     }

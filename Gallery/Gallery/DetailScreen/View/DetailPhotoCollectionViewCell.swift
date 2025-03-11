@@ -11,6 +11,8 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "DetailPhotoCollectionViewCell"
     
+    var photoId: String = ""
+    
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
@@ -93,6 +95,10 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
         
         layoutIfNeeded()
         scrollView.layoutIfNeeded()
+    }
+    
+    func setImage(_ image: UIImage) {
+        imageView.image = image
     }
     
     private func configure() {
