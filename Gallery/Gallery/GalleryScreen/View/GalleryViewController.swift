@@ -15,11 +15,13 @@ final class GalleryViewController: UIViewController, GalleryViewProtocol {
     
     let presenter: GalleryPresenterProtocol
     
+    private lazy var layout: WaterfallLayout = {
+        let layout = WaterfallLayout()
+        layout.delegate = self
+        return layout
+    }()
+    
     private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.minimumLineSpacing = 0
-        
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.dataSource = self
         collection.delegate = self
@@ -54,6 +56,7 @@ final class GalleryViewController: UIViewController, GalleryViewProtocol {
     
     func update() {
         collectionView.reloadData()
+        layout.updateLayout()
     }
 }
 
@@ -99,22 +102,21 @@ extension GalleryViewController: UICollectionViewDataSource {
 }
 
 extension GalleryViewController: UICollectionViewDelegateFlowLayout {
+
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        presenter.openDetailScreen(for: presenter.photos[indexPath.item])
+    }
+}
+
+extension GalleryViewController: WaterfallLayoutDelegate {
     
-    func collectionView(
-        _ collectionView: UICollectionView,
-        layout collectionViewLayout: UICollectionViewLayout,
-        sizeForItemAt indexPath: IndexPath
-    ) -> CGSize {
-        let screenWidth = UIScreen.main.bounds.width
+    func collectionView(_ collectionView: UICollectionView, heightForItemAtIndexPath indexPath: IndexPath) -> CGFloat {
+        let photoWidth = layout.columnWidth
         let photo = presenter.photos[indexPath.item]
         
         let aspectRatio = CGFloat(photo.height) / CGFloat(photo.width)
-        let cellHeight = screenWidth * aspectRatio
+        let cellHeight = photoWidth * aspectRatio
         
-        return CGSize(width: screenWidth, height: cellHeight)
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        presenter.openDetailScreen(for: presenter.photos[indexPath.item])
+        return cellHeight
     }
 }
