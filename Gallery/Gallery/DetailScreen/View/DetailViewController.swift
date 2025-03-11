@@ -9,6 +9,7 @@ import UIKit
 
 protocol DetailViewProtocol: AnyObject {
     
+    func update()
 }
 
 class DetailViewController: UIViewController, DetailViewProtocol {
@@ -51,10 +52,7 @@ class DetailViewController: UIViewController, DetailViewProtocol {
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+        
         scrollToSelectedPhoto()
     }
     
@@ -65,6 +63,10 @@ class DetailViewController: UIViewController, DetailViewProtocol {
             collectionView.layoutIfNeeded()
             self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
         }
+    }
+    
+    func update() {
+        collectionView.reloadData()
     }
     
 }

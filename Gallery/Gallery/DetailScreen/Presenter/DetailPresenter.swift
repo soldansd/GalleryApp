@@ -30,6 +30,7 @@ class DetailPresenter: DetailPresenterProtocol {
         self.router = router
         self.photoManager = photoManager
         self.currentPhoto = photo
+        observeDataUpdates()
     }
     
     func loadNextPage() {
@@ -47,5 +48,24 @@ class DetailPresenter: DetailPresenterProtocol {
                 }
             }
         }
+    }
+    
+    @objc private func handlePhotosUpdate(_ notification: Notification) {
+        DispatchQueue.main.async { [weak self] in
+            self?.view?.update()
+        }
+    }
+    
+    private func observeDataUpdates() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handlePhotosUpdate(_:)),
+            name: .photosDidUpdate,
+            object: nil
+        )
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .photosDidUpdate, object: nil)
     }
 }

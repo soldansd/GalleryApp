@@ -70,4 +70,8 @@ final class GalleryPresenter: GalleryPresenterProtocol {
             object: nil
         )
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .photosDidUpdate, object: nil)
+    }
 }
