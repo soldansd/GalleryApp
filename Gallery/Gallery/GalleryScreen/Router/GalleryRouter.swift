@@ -24,6 +24,7 @@ final class GalleryRouter: GalleryRouterProtocol {
     
     func openGalleryScreen() {
         let view = builder.assembly()
+        navigationController?.isNavigationBarHidden = true
         navigationController?.pushViewController(view, animated: true)
     }
     

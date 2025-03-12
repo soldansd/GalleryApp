@@ -11,8 +11,8 @@ class GalleryPhotoCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "GalleryPhotoCollectionViewCell"
     
-    var photoId: String = ""
-    var isLiked: Bool = false {
+    private(set) var photoId: String = ""
+    private(set) var isLiked: Bool = false {
         didSet {
             heartImageView.isHidden = !isLiked
         }
@@ -50,14 +50,26 @@ class GalleryPhotoCollectionViewCell: UICollectionViewCell {
             
             heartImageView.topAnchor.constraint(equalTo: imageView.topAnchor, constant: 8),
             heartImageView.trailingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: -8),
-            imageView.widthAnchor.constraint(equalToConstant: 30),
-            imageView.heightAnchor.constraint(equalToConstant: 30)
+            heartImageView.widthAnchor.constraint(equalToConstant: 20),
+            heartImageView.heightAnchor.constraint(equalToConstant: 20)
         ])
     }
     
     required init?(coder: NSCoder) { nil }
     
-    func configure(with image: UIImage?) {
+    func configure(with photo: Photo) {
+        photoId = photo.id
+        isLiked = photo.isLikedByUser
+        
+        let aspectRatio = CGFloat(photo.height) / CGFloat(photo.width)
+        let photoWidth = contentView.bounds.width
+        let photoHeight = photoWidth * aspectRatio
+        
+        let image = UIImage(blurHash: photo.blurHash, size: CGSize(width: photoWidth, height: photoHeight))
+        imageView.image = image
+    }
+    
+    func setImage(_ image: UIImage) {
         imageView.image = image
     }
 }

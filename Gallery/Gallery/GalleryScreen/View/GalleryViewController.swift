@@ -23,13 +23,14 @@ final class GalleryViewController: UIViewController, GalleryViewProtocol {
     
     private lazy var collectionView: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collection.backgroundColor = .systemBackground
         collection.dataSource = self
         collection.delegate = self
         collection.register(
             GalleryPhotoCollectionViewCell.self,
             forCellWithReuseIdentifier: GalleryPhotoCollectionViewCell.reuseIdentifier
         )
-
+        
         return collection
     }()
     
@@ -41,16 +42,17 @@ final class GalleryViewController: UIViewController, GalleryViewProtocol {
     required init?(coder: NSCoder) { nil }
     
     override func viewDidLoad() {
-        view.backgroundColor = .white
+        view.backgroundColor = .systemBackground
         presenter.viewDidLoad()
         
         view.addSubview(collectionView)
+        
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
@@ -80,21 +82,20 @@ extension GalleryViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.configure(with: nil)
-        
         let photo = presenter.photos[indexPath.item]
         let photoId = photo.id
-        cell.photoId = photoId
-        cell.isLiked = photo.isLikedByUser
+        cell.configure(with: photo)
         
         presenter.getImage(for: photo) { data in
             guard let data, cell.photoId == photoId else {
                 return
             }
             
-            let image = UIImage(data: data)
+            guard let image = UIImage(data: data) else {
+                return
+            }
             
-            cell.configure(with: image)
+            cell.setImage(image)
         }
         
         return cell
@@ -102,7 +103,7 @@ extension GalleryViewController: UICollectionViewDataSource {
 }
 
 extension GalleryViewController: UICollectionViewDelegateFlowLayout {
-
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         presenter.openDetailScreen(for: presenter.photos[indexPath.item])
     }
