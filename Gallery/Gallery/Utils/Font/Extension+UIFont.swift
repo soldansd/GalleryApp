@@ -12,4 +12,9 @@ extension UIFont {
         let font = UIFont(name: "ProstoOne-Regular", size: size) ?? UIFont.systemFont(ofSize: size)
         return UIFontMetrics.default.scaledFont(for: font)
     }
+    
+    static func openSans(size: CGFloat) -> UIFont {
+        let font = UIFont(name: "OpenSansRoman-SemiBold", size: size) ?? UIFont.systemFont(ofSize: size)
+        return UIFontMetrics.default.scaledFont(for: font)
+    }
 }

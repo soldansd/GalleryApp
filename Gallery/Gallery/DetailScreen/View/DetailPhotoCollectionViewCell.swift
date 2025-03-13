@@ -20,26 +20,12 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     private let imagePadding: CGFloat = 4.0
     private let textPadding: CGFloat = 8.0
     
-    private var gradientLayer: CAGradientLayer?
-    
     private let blurEffectView: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: .systemMaterial)
         let view = UIVisualEffectView(effect: blurEffect)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
-    private func addGradientLayer() {
-        let gradientLayer = CAGradientLayer()
-        gradientLayer.locations = [0.0, 1.0]
-        gradientLayer.startPoint = CGPoint(x: 0.5, y: 1.0)
-        gradientLayer.endPoint = CGPoint(x: 0.5, y: 0.0)
-        gradientLayer.frame = contentView.bounds
-        gradientLayer.name = "gradientLayer"
-        
-        contentView.layer.insertSublayer(gradientLayer, at: 0)
-        self.gradientLayer = gradientLayer
-    }
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
@@ -85,7 +71,7 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     
     private let userNameLabel: UILabel = {
         let label = UILabel()
-        label.font = .prostoOneRegular(size: 18)
+        label.font = .prostoOneRegular(size: 20)
         label.adjustsFontForContentSizeCategory = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -102,6 +88,15 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
         return button
     }()
     
+    lazy var infoStackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [bioLabel, descriptionLabel, altDescriptionLabel])
+        stackView.axis = .vertical
+        stackView.spacing = textPadding
+        stackView.alignment = .leading
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
+    }()
+    
     private lazy var bioLabel: UILabel = createLabel(header: "bio")
     
     private lazy var descriptionLabel: UILabel = createLabel(header: "description")
@@ -110,6 +105,7 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     
     private func createLabel(header: String) -> UILabel {
         let label = PaddingLabel(header: header)
+        label.font = .openSans(size: 18)
         label.numberOfLines = 0
         label.layer.borderWidth = 1
         label.layer.cornerRadius = 8
@@ -134,8 +130,13 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     func configure(with photo: Photo) {
         userNameLabel.text = photo.userName
         bioLabel.text = photo.userBio
+        bioLabel.isHidden = photo.userBio.isEmpty
+
         descriptionLabel.text = photo.description
+        descriptionLabel.isHidden = photo.description.isEmpty
+        
         altDescriptionLabel.text = photo.altDescription
+        altDescriptionLabel.isHidden = photo.altDescription.isEmpty
         
         let aspectRatio = CGFloat(photo.height) / CGFloat(photo.width)
         let photoWidth = contentView.bounds.width - 2 * imagePadding
@@ -153,8 +154,7 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
         let image = UIImage(blurHash: photo.blurHash, size: CGSize(width: photoWidth, height: photoHeight))
         imageView.image = image
         
-        //updateGradientColors(startColor: UIColor(hex: photo.color) ?? .clear, endColor: .clear)
-        gradientLayer?.colors = [(UIColor(hex: photo.color) ?? .clear).cgColor, UIColor.clear.cgColor]
+        backgroundColor = UIColor(hex: photo.color)
         
         layoutIfNeeded()
         scrollView.layoutIfNeeded()
@@ -165,7 +165,6 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     }
     
     private func configure() {
-        addGradientLayer()
         addSubviews()
         setupConstraints()
     }
@@ -181,9 +180,10 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
         
         scrollViewContent.addSubview(imageView)
         scrollViewContent.addSubview(userNameLabel)
-        scrollViewContent.addSubview(bioLabel)
-        scrollViewContent.addSubview(descriptionLabel)
-        scrollViewContent.addSubview(altDescriptionLabel)
+        scrollViewContent.addSubview(infoStackView)
+//        scrollViewContent.addSubview(bioLabel)
+//        scrollViewContent.addSubview(descriptionLabel)
+//        scrollViewContent.addSubview(altDescriptionLabel)
     }
     
     private func setupConstraints() {
@@ -206,8 +206,8 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
             
             scrollView.topAnchor.constraint(equalTo: blurEffectView.safeAreaLayoutGuide.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: blurEffectView.safeAreaLayoutGuide.bottomAnchor),
-            scrollView.leadingAnchor.constraint(equalTo: blurEffectView.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: blurEffectView.trailingAnchor),
+            scrollView.leadingAnchor.constraint(equalTo: blurEffectView.safeAreaLayoutGuide.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: blurEffectView.safeAreaLayoutGuide.trailingAnchor),
             
             scrollViewContent.topAnchor.constraint(equalTo: scrollView.topAnchor),
             scrollViewContent.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
@@ -223,19 +223,23 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
             
             userNameLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
             userNameLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
-            userNameLabel.bottomAnchor.constraint(equalTo: bioLabel.topAnchor, constant: -textPadding),
+            userNameLabel.bottomAnchor.constraint(equalTo: infoStackView.topAnchor, constant: -textPadding),
             
-            bioLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
-            bioLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
-            bioLabel.bottomAnchor.constraint(equalTo: descriptionLabel.topAnchor, constant: -textPadding),
+            infoStackView.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
+            infoStackView.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
+            infoStackView.bottomAnchor.constraint(equalTo: scrollViewContent.bottomAnchor, constant: -textPadding),
             
-            descriptionLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
-            descriptionLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
-            descriptionLabel.bottomAnchor.constraint(equalTo: altDescriptionLabel.topAnchor, constant: -textPadding),
-            
-            altDescriptionLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
-            altDescriptionLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
-            altDescriptionLabel.bottomAnchor.constraint(equalTo: scrollViewContent.bottomAnchor, constant: -textPadding),
+//            bioLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
+//            bioLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
+//            bioLabel.bottomAnchor.constraint(equalTo: descriptionLabel.topAnchor, constant: -textPadding),
+//            
+//            descriptionLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
+//            descriptionLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
+//            descriptionLabel.bottomAnchor.constraint(equalTo: altDescriptionLabel.topAnchor, constant: -textPadding),
+//            
+//            altDescriptionLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
+//            altDescriptionLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
+//            altDescriptionLabel.bottomAnchor.constraint(equalTo: scrollViewContent.bottomAnchor, constant: -textPadding),
             
         ])
     }
