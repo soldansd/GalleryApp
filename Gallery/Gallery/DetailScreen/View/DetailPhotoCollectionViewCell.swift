@@ -92,7 +92,8 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
         let stackView = UIStackView(arrangedSubviews: [bioLabel, descriptionLabel, altDescriptionLabel])
         stackView.axis = .vertical
         stackView.spacing = textPadding
-        stackView.alignment = .leading
+        stackView.alignment = .fill
+        stackView.distribution = .fill
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }()
@@ -107,8 +108,8 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
         let label = PaddingLabel(header: header)
         label.font = .openSans(size: 18)
         label.numberOfLines = 0
-        label.layer.borderWidth = 1
-        label.layer.cornerRadius = 8
+        //label.layer.borderWidth = 1
+        //label.layer.cornerRadius = 8
         label.layer.borderColor = UIColor.secondaryLabel.cgColor
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -229,18 +230,14 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
             infoStackView.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
             infoStackView.bottomAnchor.constraint(equalTo: scrollViewContent.bottomAnchor, constant: -textPadding),
             
-//            bioLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
-//            bioLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
-//            bioLabel.bottomAnchor.constraint(equalTo: descriptionLabel.topAnchor, constant: -textPadding),
+//            bioLabel.leadingAnchor.constraint(equalTo: infoStackView.leadingAnchor),
+//            bioLabel.trailingAnchor.constraint(equalTo: infoStackView.trailingAnchor),
 //            
-//            descriptionLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
-//            descriptionLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
-//            descriptionLabel.bottomAnchor.constraint(equalTo: altDescriptionLabel.topAnchor, constant: -textPadding),
+//            descriptionLabel.leadingAnchor.constraint(equalTo: infoStackView.leadingAnchor),
+//            descriptionLabel.trailingAnchor.constraint(equalTo: infoStackView.trailingAnchor),
 //            
-//            altDescriptionLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
-//            altDescriptionLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
-//            altDescriptionLabel.bottomAnchor.constraint(equalTo: scrollViewContent.bottomAnchor, constant: -textPadding),
-            
+//            altDescriptionLabel.leadingAnchor.constraint(equalTo: infoStackView.leadingAnchor),
+//            altDescriptionLabel.trailingAnchor.constraint(equalTo: infoStackView.trailingAnchor),
         ])
     }
     
@@ -274,7 +271,7 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
 }
 
 class PaddingLabel: UILabel {
-    var textInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    var textInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
     
     private let headerText: String
     

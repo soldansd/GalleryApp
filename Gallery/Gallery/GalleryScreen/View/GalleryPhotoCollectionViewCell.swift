@@ -7,11 +7,18 @@
 
 import UIKit
 
+protocol GalleryPhotoCollectionViewCellDelegate: AnyObject {
+    func prepareForReuse(urlStirng: String)
+}
+
 class GalleryPhotoCollectionViewCell: UICollectionViewCell {
     
     static let reuseIdentifier = "GalleryPhotoCollectionViewCell"
     
     private(set) var photoId: String = ""
+    private(set) var urlString: String = ""
+    weak var delegate: GalleryPhotoCollectionViewCellDelegate?
+    
     private(set) var isLiked: Bool = false {
         didSet {
             heartImageView.isHidden = !isLiked
@@ -57,9 +64,10 @@ class GalleryPhotoCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) { nil }
     
-    func configure(with photo: Photo) {
+    func configure(with photo: Photo, presenter: GalleryPresenterProtocol) {
         photoId = photo.id
         isLiked = photo.isLikedByUser
+        urlString = photo.imageURL
         
         let aspectRatio = CGFloat(photo.height) / CGFloat(photo.width)
         let photoWidth = contentView.bounds.width
@@ -71,5 +79,12 @@ class GalleryPhotoCollectionViewCell: UICollectionViewCell {
     
     func setImage(_ image: UIImage) {
         imageView.image = image
+    }
+    
+    override func prepareForReuse() {
+        print(#function)
+        super.prepareForReuse()
+        print(delegate)
+        delegate?.prepareForReuse(urlStirng: urlString)
     }
 }

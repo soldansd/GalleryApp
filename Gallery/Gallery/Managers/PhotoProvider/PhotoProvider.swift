@@ -55,50 +55,60 @@ final class PhotoProvider: PhotoProviderProtocol {
     }
     
     func getImage(for photo: Photo, completion: @escaping (Result<Data, Error>) -> Void) {
-        
-        if photo.isLikedByUser, let data = storageManager.getData(forKey: "\(photo.id).jpg") {
-            completion(.success(data))
-            return
-        }
-        
-        if let data = cacheManager.getData(forKey: "\(photo.id).jpg") {
-            completion(.success(data))
-            return
-        }
-        
-        networkManager.getImage(from: photo.imageURL) { [weak self] result in
-            guard let self else {
+        DispatchQueue.global(qos: .utility).async { [weak self] in
+            guard let self else { return }
+            
+            if photo.isLikedByUser, let data = storageManager.getData(forKey: "\(photo.id).jpg") {
+                completion(.success(data))
                 return
             }
-            switch result {
-            case .success(let data):
-                
-                if photo.isLikedByUser {
-                   try? self.storageManager.saveData(data, forKey: "\(photo.id).jpg")
-                } else {
-                    self.cacheManager.saveData(data, forKey: "\(photo.id).jpg")
-                }
-                
+            
+            if let data = cacheManager.getData(forKey: "\(photo.id).jpg") {
                 completion(.success(data))
-            case .failure(let error):
-                completion(.failure(error))
+                return
+            }
+            
+            networkManager.getImage(from: photo.imageURL) { [weak self] result in
+                guard let self else {
+                    return
+                }
+                switch result {
+                case .success(let data):
+                    
+                    if photo.isLikedByUser {
+                       try? self.storageManager.saveData(data, forKey: "\(photo.id).jpg")
+                    } else {
+                        self.cacheManager.saveData(data, forKey: "\(photo.id).jpg")
+                    }
+                    
+                    completion(.success(data))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
             }
         }
     }
     
     func updateLikeStatus(photo: Photo, isLiked: Bool) {
-        let key = "\(photo.id).jpg"
-        
-        if isLiked {
-            if let data = cacheManager.getData(forKey: key) {
-                try? storageManager.saveData(data, forKey: key)
-                cacheManager.removeData(forKey: key)
-            }
-        } else {
-            if let data = storageManager.getData(forKey: key) {
-                cacheManager.saveData(data, forKey: key)
-                try? storageManager.removeData(forKey: key)
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self else { return }
+            let key = "\(photo.id).jpg"
+            
+            if isLiked {
+                if let data = self.cacheManager.getData(forKey: key) {
+                    try? self.storageManager.saveData(data, forKey: key)
+                    self.cacheManager.removeData(forKey: key)
+                }
+            } else {
+                if let data = self.storageManager.getData(forKey: key) {
+                    self.cacheManager.saveData(data, forKey: key)
+                    try? self.storageManager.removeData(forKey: key)
+                }
             }
         }
+    }
+    
+    func cancelTask(for urlString: String) {
+        networkManager.cancelTask(for: urlString)
     }
 }

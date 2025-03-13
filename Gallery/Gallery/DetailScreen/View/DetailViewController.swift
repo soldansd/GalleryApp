@@ -60,10 +60,21 @@ class DetailViewController: UIViewController, DetailViewProtocol {
     private func scrollToSelectedPhoto() {
         if let index = presenter.photos.firstIndex(where: { $0.id == presenter.currentPhoto.id }) {
             let indexPath = IndexPath(item: index, section: 0)
-            collectionView.reloadData()
+            //collectionView.reloadData()
             collectionView.layoutIfNeeded()
             self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
         }
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        coordinator.animate(alongsideTransition: { [weak self] _ in
+            self?.collectionView.reloadData()
+            self?.collectionView.layoutIfNeeded()
+            self?.collectionView.collectionViewLayout.invalidateLayout()
+        }, completion: nil)
+        
+        super.viewWillTransition(to: size, with: coordinator)
+        
     }
     
     func update() {

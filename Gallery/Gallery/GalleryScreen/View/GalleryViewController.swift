@@ -57,8 +57,6 @@ final class GalleryViewController: UIViewController, GalleryViewProtocol {
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        
         coordinator.animate(alongsideTransition: { [weak self] _ in
             if size.width > size.height {
                 // Landscape
@@ -72,6 +70,9 @@ final class GalleryViewController: UIViewController, GalleryViewProtocol {
             self?.collectionView.layoutIfNeeded()
             self?.collectionView.collectionViewLayout.invalidateLayout()
         }, completion: nil)
+        
+        super.viewWillTransition(to: size, with: coordinator)
+        
     }
     
     func update() {
@@ -102,7 +103,8 @@ extension GalleryViewController: UICollectionViewDataSource {
         
         let photo = presenter.photos[indexPath.item]
         let photoId = photo.id
-        cell.configure(with: photo)
+        cell.configure(with: photo, presenter: presenter)
+        cell.delegate = self
         
         presenter.getImage(for: photo) { data in
             guard let data, cell.photoId == photoId else {
@@ -137,5 +139,12 @@ extension GalleryViewController: WaterfallLayoutDelegate {
         let cellHeight = photoWidth * aspectRatio
         
         return cellHeight
+    }
+}
+
+extension GalleryViewController: GalleryPhotoCollectionViewCellDelegate {
+    func prepareForReuse(urlStirng: String) {
+        print(presenter)
+        presenter.cancelTask(for: urlStirng)
     }
 }

@@ -13,6 +13,7 @@ protocol GalleryPresenterProtocol: AnyObject {
     func loadNextPage()
     func getImage(for photo: Photo, completion: @escaping (Data?) -> Void)
     func openDetailScreen(for photo: Photo)
+    func cancelTask(for urlString: String)
 }
 
 final class GalleryPresenter: GalleryPresenterProtocol {
@@ -54,6 +55,10 @@ final class GalleryPresenter: GalleryPresenterProtocol {
                 }
             }
         }
+    }
+    
+    func cancelTask(for urlString: String) {
+        photoManager.cancelTask(for: urlString)
     }
     
     @objc private func handlePhotosUpdate(_ notification: Notification) {

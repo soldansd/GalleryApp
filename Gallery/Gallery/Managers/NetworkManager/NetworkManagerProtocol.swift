@@ -19,4 +19,6 @@ protocol NetworkManagerProtocol {
         from urlString: String,
         completion: @escaping (Result<Data, Error>) -> Void
     )
+    
+    func cancelTask(for urlString: String)
 }

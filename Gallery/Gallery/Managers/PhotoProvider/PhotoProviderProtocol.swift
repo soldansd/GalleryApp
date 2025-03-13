@@ -12,4 +12,5 @@ protocol PhotoProviderProtocol {
     func getListPhotos(page: Int, perPage: Int, completion: @escaping (Result<[Photo], Error>) -> Void)
     func getImage(for photo: Photo, completion: @escaping (Result<Data, Error>) -> Void)
     func updateLikeStatus(photo: Photo, isLiked: Bool)
+    func cancelTask(for urlString: String)
 }

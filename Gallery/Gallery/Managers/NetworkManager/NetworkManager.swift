@@ -15,9 +15,15 @@ final class NetworkManager: NetworkManagerProtocol {
     
     private var baseComponents: URLComponents
     
+    private var lock = NSLock()
+    
+    private var activeTasks: [String: URLSessionDownloadTask] = [:]
+    
     private init() {
         let config = URLSessionConfiguration.default
-        session = URLSession(configuration: config)
+        let delegateQueue = OperationQueue()
+        delegateQueue.qualityOfService = .utility
+        session = URLSession(configuration: config, delegate: nil, delegateQueue: delegateQueue)
         
         baseComponents = URLComponents()
         baseComponents.scheme = "https"
@@ -75,17 +81,48 @@ final class NetworkManager: NetworkManagerProtocol {
     }
     
     func getImage(from urlString: String, completion: @escaping (Result<Data, Error>) -> Void) {
+        lock.lock()
+        guard activeTasks[urlString] == nil else {
+            lock.unlock()
+            return
+        }
+        lock.unlock()
+        
         guard let url = URL(string: urlString) else {
             completion(.failure(NetworkError.invalidURL))
             return
         }
         
-        let task = session.dataTask(with: url) { data, response, error in
+        let task = session.downloadTask(with: url) { [weak self] localURL, response, error in
+            guard let self, let localURL, let data = try? Data(contentsOf: localURL) else { return }
+            lock.lock()
+            if let task = activeTasks[urlString] {
+                task.cancel()
+                activeTasks.removeValue(forKey: urlString)
+            }
+            lock.unlock()
             let result = NetworkManager.validateNetworkResponse(data: data, response: response, error: error)
             completion(result)
         }
         
+        lock.lock()
+        activeTasks[urlString] = task
+        lock.unlock()
+        
         task.resume()
+    }
+    
+    func cancelTask(for urlString: String) {
+        DispatchQueue.global().async { [weak self] in
+            guard let self else { return }
+            lock.lock()
+            if let task = activeTasks[urlString] {
+                task.cancel()
+                activeTasks.removeValue(forKey: urlString)
+                print("Task cancelled")
+            }
+            lock.unlock()
+        }
     }
     
     private static func validateNetworkResponse(
