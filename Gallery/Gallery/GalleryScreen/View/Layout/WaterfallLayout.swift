@@ -31,7 +31,6 @@ class WaterfallLayout: UICollectionViewLayout {
     private var previousCountOfElements = 0
     private var shouldUpdateLayout = true
     
-    
     private var width: CGFloat {
         return collectionView?.bounds.width ?? .zero
     }
@@ -57,6 +56,7 @@ class WaterfallLayout: UICollectionViewLayout {
         guard shouldUpdateLayout, let collectionView else { return }
         
         if lastAttributesForColumn.count != numberOfColumns {
+            attributes = []
             lastAttributesForColumn = Array(repeating: nil, count: numberOfColumns)
         }
         

@@ -11,7 +11,9 @@ struct Photo {
     let id: String
     let imageURL: String
     let userName: String
+    let userBio: String
     let description: String
+    let altDescription: String
     let width: Int
     let height: Int
     let color: String

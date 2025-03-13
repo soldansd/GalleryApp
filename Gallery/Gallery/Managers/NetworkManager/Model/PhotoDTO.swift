@@ -11,7 +11,9 @@ struct PhotoDTO: Decodable {
     let id: String
     let imageURL: String
     let userName: String
+    let userBio: String
     let description: String
+    let altDescription: String
     let width: Int
     let height: Int
     let color: String
@@ -22,7 +24,8 @@ struct PhotoDTO: Decodable {
         case id
         case urls
         case user
-        case description = "alt_description"
+        case description
+        case altDescription = "alt_description"
         case width
         case height
         case color
@@ -35,6 +38,7 @@ struct PhotoDTO: Decodable {
         
         enum User: String, CodingKey {
             case name
+            case bio
         }
     }
     
@@ -43,6 +47,7 @@ struct PhotoDTO: Decodable {
         
         id = try container.decode(String.self, forKey: .id)
         description = try container.decodeIfPresent(String.self, forKey: .description) ?? ""
+        altDescription = try container.decodeIfPresent(String.self, forKey: .altDescription) ?? ""
         width = try container.decode(Int.self, forKey: .width)
         height = try container.decode(Int.self, forKey: .height)
         color = try container.decode(String.self, forKey: .color)
@@ -54,6 +59,7 @@ struct PhotoDTO: Decodable {
         
         let userContainer = try container.nestedContainer(keyedBy: CodingKeys.User.self, forKey: .user)
         userName = try userContainer.decode(String.self, forKey: .name)
+        userBio = try userContainer.decodeIfPresent(String.self, forKey: .bio) ?? ""
     }
 }
 
@@ -64,7 +70,9 @@ extension PhotoDTO {
             id: self.id,
             imageURL: self.imageURL,
             userName: self.userName,
+            userBio: self.userBio,
             description: self.description,
+            altDescription: self.altDescription,
             width: self.width,
             height: self.height,
             color: self.color,

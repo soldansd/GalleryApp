@@ -31,32 +31,14 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     
     private func addGradientLayer() {
         let gradientLayer = CAGradientLayer()
-        gradientLayer.colors = [
-            UIColor.black.cgColor,  // Default Start Color
-            UIColor.clear.cgColor   // Default End Color
-        ]
         gradientLayer.locations = [0.0, 1.0]
         gradientLayer.startPoint = CGPoint(x: 0.5, y: 1.0)
         gradientLayer.endPoint = CGPoint(x: 0.5, y: 0.0)
         gradientLayer.frame = contentView.bounds
         gradientLayer.name = "gradientLayer"
-
-        contentView.layer.insertSublayer(gradientLayer, at: 0)
-        self.gradientLayer = gradientLayer  // Store reference
-    }
-    
-    func updateGradientColors(startColor: UIColor, endColor: UIColor) {
-        guard let gradientLayer = gradientLayer else { return }
         
-        let animation = CABasicAnimation(keyPath: "colors")
-        animation.fromValue = gradientLayer.colors
-        animation.toValue = [startColor.cgColor, endColor.cgColor]
-        animation.duration = 0.5 // Smooth transition
-        animation.fillMode = .forwards
-        animation.isRemovedOnCompletion = false
-
-        gradientLayer.add(animation, forKey: "colorChange")
-        gradientLayer.colors = [startColor.cgColor, endColor.cgColor] // Ensure final state
+        contentView.layer.insertSublayer(gradientLayer, at: 0)
+        self.gradientLayer = gradientLayer
     }
     
     private let imageView: UIImageView = {
@@ -120,12 +102,21 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
         return button
     }()
     
-    private let descriptionLabel: UILabel = {
-        let label = UILabel()
+    private lazy var bioLabel: UILabel = createLabel(header: "bio")
+    
+    private lazy var descriptionLabel: UILabel = createLabel(header: "description")
+    
+    private lazy var altDescriptionLabel: UILabel = createLabel(header: "alt description")
+    
+    private func createLabel(header: String) -> UILabel {
+        let label = PaddingLabel(header: header)
         label.numberOfLines = 0
+        label.layer.borderWidth = 1
+        label.layer.cornerRadius = 8
+        label.layer.borderColor = UIColor.secondaryLabel.cgColor
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
-    }()
+    }
     
     private lazy var imageViewHeightConstraint = imageView.heightAnchor.constraint(equalToConstant: 300)
     
@@ -142,7 +133,9 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     
     func configure(with photo: Photo) {
         userNameLabel.text = photo.userName
+        bioLabel.text = photo.userBio
         descriptionLabel.text = photo.description
+        altDescriptionLabel.text = photo.altDescription
         
         let aspectRatio = CGFloat(photo.height) / CGFloat(photo.width)
         let photoWidth = contentView.bounds.width - 2 * imagePadding
@@ -160,7 +153,8 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
         let image = UIImage(blurHash: photo.blurHash, size: CGSize(width: photoWidth, height: photoHeight))
         imageView.image = image
         
-        updateGradientColors(startColor: UIColor(hex: photo.color) ?? .clear, endColor: .clear)
+        //updateGradientColors(startColor: UIColor(hex: photo.color) ?? .clear, endColor: .clear)
+        gradientLayer?.colors = [(UIColor(hex: photo.color) ?? .clear).cgColor, UIColor.clear.cgColor]
         
         layoutIfNeeded()
         scrollView.layoutIfNeeded()
@@ -178,23 +172,33 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     
     private func addSubviews() {
         contentView.addSubview(blurEffectView)
-        blurEffectView.contentView.addSubview(scrollView)
-        
-        //contentView.addSubview(scrollView)
         contentView.addSubview(backButton)
         contentView.addSubview(likeButton)
+        
+        blurEffectView.contentView.addSubview(scrollView)
         
         scrollView.addSubview(scrollViewContent)
         
         scrollViewContent.addSubview(imageView)
         scrollViewContent.addSubview(userNameLabel)
+        scrollViewContent.addSubview(bioLabel)
         scrollViewContent.addSubview(descriptionLabel)
-        scrollViewContent.addSubview(userNameLabel)
+        scrollViewContent.addSubview(altDescriptionLabel)
     }
     
     private func setupConstraints() {
         
         NSLayoutConstraint.activate([
+            likeButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 8),
+            likeButton.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -12),
+            likeButton.widthAnchor.constraint(equalToConstant: 38),
+            likeButton.heightAnchor.constraint(equalToConstant: 38),
+            
+            backButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 8),
+            backButton.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 12),
+            backButton.widthAnchor.constraint(equalToConstant: 38),
+            backButton.heightAnchor.constraint(equalToConstant: 38),
+            
             blurEffectView.topAnchor.constraint(equalTo: contentView.topAnchor),
             blurEffectView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             blurEffectView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
@@ -203,14 +207,7 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
             scrollView.topAnchor.constraint(equalTo: blurEffectView.safeAreaLayoutGuide.topAnchor),
             scrollView.bottomAnchor.constraint(equalTo: blurEffectView.safeAreaLayoutGuide.bottomAnchor),
             scrollView.leadingAnchor.constraint(equalTo: blurEffectView.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: blurEffectView.trailingAnchor)
-        ])
-        
-        NSLayoutConstraint.activate([
-//            scrollView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor),
-//            scrollView.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor),
-//            scrollView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
-//            scrollView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: blurEffectView.trailingAnchor),
             
             scrollViewContent.topAnchor.constraint(equalTo: scrollView.topAnchor),
             scrollViewContent.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
@@ -221,27 +218,36 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
             imageView.topAnchor.constraint(equalTo: scrollViewContent.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: imagePadding),
             imageView.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -imagePadding),
+            imageView.bottomAnchor.constraint(equalTo: userNameLabel.topAnchor, constant: -textPadding),
             imageViewHeightConstraint,
             
-            userNameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: textPadding),
             userNameLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
             userNameLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
+            userNameLabel.bottomAnchor.constraint(equalTo: bioLabel.topAnchor, constant: -textPadding),
+            
+            bioLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
+            bioLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
+            bioLabel.bottomAnchor.constraint(equalTo: descriptionLabel.topAnchor, constant: -textPadding),
             
             descriptionLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
             descriptionLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
-            descriptionLabel.topAnchor.constraint(equalTo: userNameLabel.bottomAnchor, constant: textPadding),
-            descriptionLabel.bottomAnchor.constraint(equalTo: scrollViewContent.bottomAnchor, constant: -textPadding),
+            descriptionLabel.bottomAnchor.constraint(equalTo: altDescriptionLabel.topAnchor, constant: -textPadding),
             
-            likeButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 8),
-            likeButton.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -12),
-            likeButton.widthAnchor.constraint(equalToConstant: 38),
-            likeButton.heightAnchor.constraint(equalToConstant: 38),
+            altDescriptionLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
+            altDescriptionLabel.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -textPadding),
+            altDescriptionLabel.bottomAnchor.constraint(equalTo: scrollViewContent.bottomAnchor, constant: -textPadding),
             
-            backButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 8),
-            backButton.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 12),
-            backButton.widthAnchor.constraint(equalToConstant: 38),
-            backButton.heightAnchor.constraint(equalToConstant: 38)
         ])
+    }
+    
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        
+        if traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) {
+            bioLabel.layer.borderColor = UIColor.secondaryLabel.cgColor
+            descriptionLabel.layer.borderColor = UIColor.secondaryLabel.cgColor
+            altDescriptionLabel.layer.borderColor = UIColor.secondaryLabel.cgColor
+        }
     }
     
     @objc private func back() {
@@ -260,5 +266,68 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
         }
         
         likeButtonTapped()
+    }
+}
+
+class PaddingLabel: UILabel {
+    var textInsets = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+    
+    private let headerText: String
+    
+    override var text: String? {
+        didSet {
+            updateAttributedText()
+        }
+    }
+    
+    override var font: UIFont! {
+        didSet {
+            updateAttributedText()
+        }
+    }
+
+    init(header: String) {
+        self.headerText = header
+        super.init(frame: .zero)
+    }
+    
+    required init?(coder: NSCoder) { return nil }
+
+    override func drawText(in rect: CGRect) {
+        let insetRect = rect.inset(by: textInsets)
+        super.drawText(in: insetRect)
+    }
+
+    override var intrinsicContentSize: CGSize {
+        guard let text = self.text, !text.isEmpty else { return .zero }
+        let size = super.intrinsicContentSize
+        return CGSize(width: size.width + textInsets.left + textInsets.right,
+                      height: size.height + textInsets.top + textInsets.bottom)
+    }
+
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        return intrinsicContentSize
+    }
+
+    func updateAttributedText() {
+        guard let text = text, !text.isEmpty else {
+            self.attributedText = nil
+            return
+        }
+        
+        let headerAttributes: [NSAttributedString.Key: Any] = [
+            .font: font.withSize(font.pointSize - 2),
+            .foregroundColor: UIColor.secondaryLabel
+        ]
+        
+        let mainAttributes: [NSAttributedString.Key: Any] = [
+            .font: font ?? UIFont.systemFont(ofSize: 14),
+            .foregroundColor: UIColor.label
+        ]
+        
+        let attributedString = NSMutableAttributedString(string: headerText + "\n", attributes: headerAttributes)
+        attributedString.append(NSAttributedString(string: text, attributes: mainAttributes))
+        
+        self.attributedText = attributedString
     }
 }

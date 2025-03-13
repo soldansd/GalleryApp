@@ -21,9 +21,16 @@ final class GalleryViewController: UIViewController, GalleryViewProtocol {
         return layout
     }()
     
+    private let blurEffectView: UIVisualEffectView = {
+        let blurEffect = UIBlurEffect(style: .systemMaterial)
+        let view = UIVisualEffectView(effect: blurEffect)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var collectionView: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collection.backgroundColor = .systemBackground
+        collection.backgroundColor = .clear
         collection.dataSource = self
         collection.delegate = self
         collection.register(
@@ -42,18 +49,41 @@ final class GalleryViewController: UIViewController, GalleryViewProtocol {
     required init?(coder: NSCoder) { nil }
     
     override func viewDidLoad() {
-        view.backgroundColor = .systemBackground
         presenter.viewDidLoad()
         
-        view.addSubview(collectionView)
+        view.addSubview(blurEffectView)
+        blurEffectView.contentView.addSubview(collectionView)
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+            blurEffectView.topAnchor.constraint(equalTo: view.topAnchor),
+            blurEffectView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            blurEffectView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            blurEffectView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            
+            collectionView.topAnchor.constraint(equalTo: blurEffectView.safeAreaLayoutGuide.topAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: blurEffectView.safeAreaLayoutGuide.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: blurEffectView.safeAreaLayoutGuide.trailingAnchor),
+            collectionView.bottomAnchor.constraint(equalTo: blurEffectView.safeAreaLayoutGuide.bottomAnchor)
         ])
+    }
+    
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
+        coordinator.animate(alongsideTransition: { [weak self] _ in
+            if size.width > size.height {
+                // Landscape
+                self?.layout.numberOfColumns = 3
+            } else {
+                // Portrait
+                self?.layout.numberOfColumns = 2
+            }
+            
+            self?.collectionView.reloadData()
+            self?.collectionView.layoutIfNeeded()
+            self?.collectionView.collectionViewLayout.invalidateLayout()
+        }, completion: nil)
     }
     
     func update() {
