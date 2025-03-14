@@ -78,6 +78,8 @@ class GalleryPhotoCollectionViewCell: UICollectionViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        delegate?.prepareForReuse(urlStirng: urlString)
+        if imageView.image == nil {
+            delegate?.prepareForReuse(urlStirng: urlString)
+        }
     }
 }

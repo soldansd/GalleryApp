@@ -21,9 +21,7 @@ final class NetworkManager: NetworkManagerProtocol {
     
     private init() {
         let config = URLSessionConfiguration.default
-        let delegateQueue = OperationQueue()
-        delegateQueue.qualityOfService = .utility
-        session = URLSession(configuration: config, delegate: nil, delegateQueue: delegateQueue)
+        session = URLSession(configuration: config)
         
         baseComponents = URLComponents()
         baseComponents.scheme = "https"

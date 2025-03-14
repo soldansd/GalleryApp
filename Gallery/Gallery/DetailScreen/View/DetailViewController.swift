@@ -67,10 +67,16 @@ class DetailViewController: UIViewController, DetailViewProtocol {
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        guard let visibleIndexPath = collectionView.indexPathsForVisibleItems.first else {
+                super.viewWillTransition(to: size, with: coordinator)
+                return
+            }
+        
         coordinator.animate(alongsideTransition: { [weak self] _ in
             self?.collectionView.reloadData()
             self?.collectionView.layoutIfNeeded()
-            self?.collectionView.collectionViewLayout.invalidateLayout()
+            //self?.collectionView.collectionViewLayout.invalidateLayout()
+            self?.collectionView.scrollToItem(at: visibleIndexPath, at: .centeredHorizontally, animated: false)
         }, completion: nil)
         
         super.viewWillTransition(to: size, with: coordinator)
@@ -139,6 +145,6 @@ extension DetailViewController: UICollectionViewDelegateFlowLayout {
         sizeForItemAt indexPath: IndexPath
     ) -> CGSize {
         
-        return CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        return CGSize(width: view.bounds.width, height: view.bounds.height)
     }
 }

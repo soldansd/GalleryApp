@@ -17,6 +17,9 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     var likeButtonTapped: () -> Void = { }
     var backButtonTapped: () -> Void = { }
     
+    private var initialPhotoHeight = 0
+    private var initialPhotoWidth = 0
+    
     private let imagePadding: CGFloat = 4.0
     private let textPadding: CGFloat = 8.0
     
@@ -106,7 +109,7 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     
     private func createLabel(header: String) -> UILabel {
         let label = PaddingLabel(header: header)
-        label.font = .openSans(size: 18)
+        label.font = .openSans(size: 16)
         label.numberOfLines = 0
         //label.layer.borderWidth = 1
         //label.layer.cornerRadius = 8
@@ -116,6 +119,8 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     }
     
     private lazy var imageViewHeightConstraint = imageView.heightAnchor.constraint(equalToConstant: 300)
+    
+    private lazy var imageViewWidthConstraint = imageView.widthAnchor.constraint(equalToConstant: 300)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -129,6 +134,8 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) { nil }
     
     func configure(with photo: Photo) {
+        initialPhotoWidth = photo.width
+        initialPhotoHeight = photo.height
         userNameLabel.text = photo.userName
         bioLabel.text = photo.userBio
         bioLabel.isHidden = photo.userBio.isEmpty
@@ -142,6 +149,7 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
         let aspectRatio = CGFloat(photo.height) / CGFloat(photo.width)
         let photoWidth = contentView.bounds.width - 2 * imagePadding
         let photoHeight = photoWidth * aspectRatio
+        imageViewWidthConstraint.constant = photoWidth
         imageViewHeightConstraint.constant = photoHeight
         
         if photo.isLikedByUser {
@@ -152,6 +160,7 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
             likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
         }
         
+        imageView.image = nil
         imageView.backgroundColor = UIColor(hex: photo.color)
         
         backgroundColor = UIColor(hex: photo.color)
@@ -189,12 +198,12 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
     private func setupConstraints() {
         
         NSLayoutConstraint.activate([
-            likeButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 8),
+            likeButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 16),
             likeButton.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor, constant: -12),
             likeButton.widthAnchor.constraint(equalToConstant: 38),
             likeButton.heightAnchor.constraint(equalToConstant: 38),
             
-            backButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 8),
+            backButton.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor, constant: 16),
             backButton.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor, constant: 12),
             backButton.widthAnchor.constraint(equalToConstant: 38),
             backButton.heightAnchor.constraint(equalToConstant: 38),
@@ -215,10 +224,10 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
             scrollViewContent.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
             scrollViewContent.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             
-            imageView.topAnchor.constraint(equalTo: scrollViewContent.topAnchor),
-            imageView.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: imagePadding),
-            imageView.trailingAnchor.constraint(equalTo: scrollViewContent.trailingAnchor, constant: -imagePadding),
+            imageView.topAnchor.constraint(equalTo: scrollViewContent.topAnchor, constant: imagePadding),
+            imageView.centerXAnchor.constraint(equalTo: scrollViewContent.centerXAnchor),
             imageView.bottomAnchor.constraint(equalTo: userNameLabel.topAnchor, constant: -textPadding),
+            imageViewWidthConstraint,
             imageViewHeightConstraint,
             
             userNameLabel.leadingAnchor.constraint(equalTo: scrollViewContent.leadingAnchor, constant: textPadding),
@@ -266,6 +275,29 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
         }
         
         likeButtonTapped()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        if bounds.width > bounds.height {
+            let aspectRatio = CGFloat(initialPhotoWidth) / CGFloat(initialPhotoHeight)
+            var photoHeight = safeAreaLayoutGuide.layoutFrame.height - userNameLabel.bounds.height - imagePadding * 3
+            var photoWidth = photoHeight * aspectRatio
+            let safeAreaWidth = safeAreaLayoutGuide.layoutFrame.width
+            if photoWidth > safeAreaWidth {
+                photoWidth = safeAreaWidth - imagePadding * 2
+            }
+            photoHeight = photoWidth / aspectRatio
+            imageViewWidthConstraint.constant = photoWidth
+            imageViewHeightConstraint.constant = photoHeight
+        } else {
+            let aspectRatio = CGFloat(initialPhotoHeight) / CGFloat(initialPhotoWidth)
+            let photoWidth = contentView.bounds.width - 2 * imagePadding
+            let photoHeight = photoWidth * aspectRatio
+            imageViewWidthConstraint.constant = photoWidth
+            imageViewHeightConstraint.constant = photoHeight
+        }
     }
 }
 

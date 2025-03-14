@@ -55,7 +55,7 @@ final class PhotoProvider: PhotoProviderProtocol {
     }
     
     func getImage(for photo: Photo, completion: @escaping (Result<Data, Error>) -> Void) {
-        DispatchQueue.global(qos: .utility).async { [weak self] in
+        DispatchQueue.global(qos: .userInteractive).async { [weak self] in
             guard let self else { return }
             
             if photo.isLikedByUser, let data = storageManager.getData(forKey: "\(photo.id).jpg") {

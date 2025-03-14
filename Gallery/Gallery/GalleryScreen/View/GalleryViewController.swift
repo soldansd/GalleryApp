@@ -54,25 +54,28 @@ final class GalleryViewController: UIViewController, GalleryViewProtocol {
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
+        
+        updateNumberOfColumns(to: view.bounds.size)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-//        coordinator.animate(alongsideTransition: { [weak self] _ in
-//            if size.width > size.height {
-//                // Landscape
-//                self?.layout.numberOfColumns = 3
-//            } else {
-//                // Portrait
-//                self?.layout.numberOfColumns = 2
-//            }
-//            
-//            self?.collectionView.reloadData()
-//            self?.collectionView.layoutIfNeeded()
-//            self?.collectionView.collectionViewLayout.invalidateLayout()
-//        }, completion: nil)
+        coordinator.animate(alongsideTransition: { [weak self] _ in
+            self?.updateNumberOfColumns(to: size)
+        }, completion: nil)
         
         super.viewWillTransition(to: size, with: coordinator)
-        
+    }
+    
+    private func updateNumberOfColumns(to size: CGSize) {
+        if size.width > 1000 {
+            layout.numberOfColumns = 4
+        } else if size.width > 750 {
+            layout.numberOfColumns = 3
+        } else {
+            layout.numberOfColumns = 2
+        }
+        collectionView.reloadData()
+        collectionView.collectionViewLayout.invalidateLayout()
     }
     
     func update() {
