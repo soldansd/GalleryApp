@@ -57,19 +57,19 @@ final class GalleryViewController: UIViewController, GalleryViewProtocol {
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        coordinator.animate(alongsideTransition: { [weak self] _ in
-            if size.width > size.height {
-                // Landscape
-                self?.layout.numberOfColumns = 3
-            } else {
-                // Portrait
-                self?.layout.numberOfColumns = 2
-            }
-            
-            self?.collectionView.reloadData()
-            self?.collectionView.layoutIfNeeded()
-            self?.collectionView.collectionViewLayout.invalidateLayout()
-        }, completion: nil)
+//        coordinator.animate(alongsideTransition: { [weak self] _ in
+//            if size.width > size.height {
+//                // Landscape
+//                self?.layout.numberOfColumns = 3
+//            } else {
+//                // Portrait
+//                self?.layout.numberOfColumns = 2
+//            }
+//            
+//            self?.collectionView.reloadData()
+//            self?.collectionView.layoutIfNeeded()
+//            self?.collectionView.collectionViewLayout.invalidateLayout()
+//        }, completion: nil)
         
         super.viewWillTransition(to: size, with: coordinator)
         
@@ -103,7 +103,7 @@ extension GalleryViewController: UICollectionViewDataSource {
         
         let photo = presenter.photos[indexPath.item]
         let photoId = photo.id
-        cell.configure(with: photo, presenter: presenter)
+        cell.configure(with: photo)
         cell.delegate = self
         
         presenter.getImage(for: photo) { data in
@@ -115,7 +115,7 @@ extension GalleryViewController: UICollectionViewDataSource {
                 return
             }
             
-            cell.setImage(image)
+           cell.setImage(image)
         }
         
         return cell
@@ -144,7 +144,6 @@ extension GalleryViewController: WaterfallLayoutDelegate {
 
 extension GalleryViewController: GalleryPhotoCollectionViewCellDelegate {
     func prepareForReuse(urlStirng: String) {
-        print(presenter)
         presenter.cancelTask(for: urlStirng)
     }
 }

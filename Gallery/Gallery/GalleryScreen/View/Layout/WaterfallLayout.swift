@@ -56,6 +56,7 @@ class WaterfallLayout: UICollectionViewLayout {
         guard shouldUpdateLayout, let collectionView else { return }
         
         if lastAttributesForColumn.count != numberOfColumns {
+            previousCountOfElements = 0
             attributes = []
             lastAttributesForColumn = Array(repeating: nil, count: numberOfColumns)
         }

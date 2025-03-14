@@ -64,17 +64,12 @@ class GalleryPhotoCollectionViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) { nil }
     
-    func configure(with photo: Photo, presenter: GalleryPresenterProtocol) {
+    func configure(with photo: Photo) {
         photoId = photo.id
         isLiked = photo.isLikedByUser
         urlString = photo.imageURL
-        
-        let aspectRatio = CGFloat(photo.height) / CGFloat(photo.width)
-        let photoWidth = contentView.bounds.width
-        let photoHeight = photoWidth * aspectRatio
-        
-        let image = UIImage(blurHash: photo.blurHash, size: CGSize(width: photoWidth, height: photoHeight))
-        imageView.image = image
+        imageView.image = nil
+        imageView.backgroundColor = UIColor(hex: photo.color)
     }
     
     func setImage(_ image: UIImage) {
@@ -82,9 +77,7 @@ class GalleryPhotoCollectionViewCell: UICollectionViewCell {
     }
     
     override func prepareForReuse() {
-        print(#function)
         super.prepareForReuse()
-        print(delegate)
         delegate?.prepareForReuse(urlStirng: urlString)
     }
 }

@@ -152,8 +152,7 @@ class DetailPhotoCollectionViewCell: UICollectionViewCell {
             likeButton.setImage(UIImage(systemName: "heart"), for: .normal)
         }
         
-        let image = UIImage(blurHash: photo.blurHash, size: CGSize(width: photoWidth, height: photoHeight))
-        imageView.image = image
+        imageView.backgroundColor = UIColor(hex: photo.color)
         
         backgroundColor = UIColor(hex: photo.color)
         

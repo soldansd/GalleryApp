@@ -96,10 +96,7 @@ final class NetworkManager: NetworkManagerProtocol {
         let task = session.downloadTask(with: url) { [weak self] localURL, response, error in
             guard let self, let localURL, let data = try? Data(contentsOf: localURL) else { return }
             lock.lock()
-            if let task = activeTasks[urlString] {
-                task.cancel()
-                activeTasks.removeValue(forKey: urlString)
-            }
+            activeTasks.removeValue(forKey: urlString)
             lock.unlock()
             let result = NetworkManager.validateNetworkResponse(data: data, response: response, error: error)
             completion(result)
@@ -119,7 +116,6 @@ final class NetworkManager: NetworkManagerProtocol {
             if let task = activeTasks[urlString] {
                 task.cancel()
                 activeTasks.removeValue(forKey: urlString)
-                print("Task cancelled")
             }
             lock.unlock()
         }

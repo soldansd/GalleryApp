@@ -33,7 +33,7 @@ struct PhotoDTO: Decodable {
         case isLikedByUser = "liked_by_user"
         
         enum Urls: String, CodingKey {
-            case small
+            case small = "full"
         }
         
         enum User: String, CodingKey {
