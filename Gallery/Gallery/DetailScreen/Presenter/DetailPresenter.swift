@@ -9,14 +9,14 @@ import Foundation
 
 final class DetailPresenter {
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     weak var view: DetailViewProtocol?
     private let router: DetailRouterProtocol
     private let photoManager: PhotoPaginationManagerProtocol
     let initialPhoto: Photo
     
-    //MARK: - Init
+    // MARK: - Init
     
     init(router: DetailRouterProtocol, photoManager: PhotoPaginationManagerProtocol, photo: Photo) {
         self.router = router
@@ -25,7 +25,7 @@ final class DetailPresenter {
         observeDataUpdates()
     }
     
-    //MARK: - Methods
+    // MARK: - Methods
     
     private func observeDataUpdates() {
         NotificationCenter.default.addObserver(
@@ -42,14 +42,14 @@ final class DetailPresenter {
         }
     }
     
-    //MARK: - Deinit
+    // MARK: - Deinit
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: .photosDidUpdate, object: nil)
     }
 }
 
-//MARK: - DetailPresenterProtocol
+// MARK: - DetailPresenterProtocol
 
 extension DetailPresenter: DetailPresenterProtocol {
     

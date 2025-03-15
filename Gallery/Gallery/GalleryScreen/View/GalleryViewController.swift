@@ -7,32 +7,17 @@
 
 import UIKit
 
-protocol GalleryViewProtocol: AnyObject {
-    func update()
-}
-
-final class GalleryViewController: UIViewController, GalleryViewProtocol {
+final class GalleryViewController: UIViewController {
+    
+    // MARK: - Properties
     
     let presenter: GalleryPresenterProtocol
     
-    private lazy var layout: WaterfallLayout = {
-        let layout = WaterfallLayout()
-        layout.delegate = self
-        return layout
-    }()
+    private var galleryView: GalleryView? {
+        return view as? GalleryView
+    }
     
-    private lazy var collectionView: UICollectionView = {
-        let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collection.backgroundColor = .clear
-        collection.dataSource = self
-        collection.delegate = self
-        collection.register(
-            GalleryPhotoCollectionViewCell.self,
-            forCellWithReuseIdentifier: GalleryPhotoCollectionViewCell.reuseIdentifier
-        )
-        
-        return collection
-    }()
+    // MARK: - Init
     
     init(presenter: GalleryPresenterProtocol) {
         self.presenter = presenter
@@ -41,50 +26,68 @@ final class GalleryViewController: UIViewController, GalleryViewProtocol {
     
     required init?(coder: NSCoder) { nil }
     
+    // MARK: - Life cycle
+    
+    override func loadView() {
+        super.loadView()
+        view = GalleryView()
+    }
+    
     override func viewDidLoad() {
-        presenter.viewDidLoad()
-        
-        view.addSubview(collectionView)
-        view.backgroundColor = .appBackground
-        
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-        ])
-        
-        updateNumberOfColumns(to: view.bounds.size)
+        super.viewDidLoad()
+        presenter.loadNextPage()
+        configureGalleryView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        galleryView?.updateNumberOfColumns(to: view.bounds.size)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        coordinator.animate(alongsideTransition: { [weak self] _ in
-            self?.updateNumberOfColumns(to: size)
-        }, completion: nil)
-        
         super.viewWillTransition(to: size, with: coordinator)
+        galleryView?.willTransition(to: size, with: coordinator)
     }
     
-    private func updateNumberOfColumns(to size: CGSize) {
-        if size.width > 1000 {
-            layout.numberOfColumns = 4
-        } else if size.width > 750 {
-            layout.numberOfColumns = 3
-        } else {
-            layout.numberOfColumns = 2
-        }
-        collectionView.reloadData()
-        collectionView.collectionViewLayout.invalidateLayout()
-    }
+    // MARK: - Methods
     
-    func update() {
-        collectionView.reloadData()
-        layout.updateLayout()
+    private func configureGalleryView() {
+        galleryView?.setupCollectionViewDataSource(self)
+        galleryView?.setupCollectionViewDelegate(self)
+        galleryView?.setupLayoutDelegate(self)
     }
 }
 
+// MARK: - GalleryViewProtocol
+
+extension GalleryViewController: GalleryViewProtocol {
+    
+    func update() {
+        galleryView?.update()
+    }
+}
+
+// MARK: - WaterfallLayoutDelegate
+
+extension GalleryViewController: WaterfallLayoutDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, heightForItemAtIndexPath indexPath: IndexPath) -> CGFloat {
+        guard let galleryView else { return 0 }
+        
+        let photoWidth = galleryView.layout.columnWidth
+        let photo = presenter.photos[indexPath.item]
+        
+        let aspectRatio = CGFloat(photo.height) / CGFloat(photo.width)
+        let cellHeight = photoWidth * aspectRatio
+        
+        return cellHeight
+    }
+}
+
+// MARK: - UICollectionViewDataSource
+
 extension GalleryViewController: UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         presenter.photos.count
     }
@@ -98,16 +101,15 @@ extension GalleryViewController: UICollectionViewDataSource {
             presenter.loadNextPage()
         }
         
-        let id = GalleryPhotoCollectionViewCell.reuseIdentifier
+        let id = GalleryViewCell.reuseIdentifier
         let reusableCell = collectionView.dequeueReusableCell(withReuseIdentifier: id, for: indexPath)
-        guard let cell = reusableCell as? GalleryPhotoCollectionViewCell else {
+        guard let cell = reusableCell as? GalleryViewCell else {
             return UICollectionViewCell()
         }
         
         let photo = presenter.photos[indexPath.item]
         let photoId = photo.id
-        cell.configure(with: photo)
-        cell.delegate = self
+        cell.update(with: photo)
         
         presenter.getImage(for: photo) { data in
             guard let data, cell.photoId == photoId else {
@@ -125,28 +127,11 @@ extension GalleryViewController: UICollectionViewDataSource {
     }
 }
 
-extension GalleryViewController: UICollectionViewDelegateFlowLayout {
+// MARK: - UICollectionViewDelegate
+
+extension GalleryViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         presenter.openDetailScreen(for: presenter.photos[indexPath.item])
-    }
-}
-
-extension GalleryViewController: WaterfallLayoutDelegate {
-    
-    func collectionView(_ collectionView: UICollectionView, heightForItemAtIndexPath indexPath: IndexPath) -> CGFloat {
-        let photoWidth = layout.columnWidth
-        let photo = presenter.photos[indexPath.item]
-        
-        let aspectRatio = CGFloat(photo.height) / CGFloat(photo.width)
-        let cellHeight = photoWidth * aspectRatio
-        
-        return cellHeight
-    }
-}
-
-extension GalleryViewController: GalleryPhotoCollectionViewCellDelegate {
-    func prepareForReuse(urlStirng: String) {
-        presenter.cancelTask(for: urlStirng)
     }
 }

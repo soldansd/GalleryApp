@@ -107,8 +107,4 @@ final class PhotoProvider: PhotoProviderProtocol {
             }
         }
     }
-    
-    func cancelTask(for urlString: String) {
-        networkManager.cancelTask(for: urlString)
-    }
 }

@@ -8,11 +8,8 @@
 import Foundation
 
 protocol PhotoPaginationManagerProtocol {
-    
     var photos: [Photo] { get }
-    
     func loadNextPage()
     func updateLikeStatus(photo: Photo, isLiked: Bool)
     func getImage(for photo: Photo, completion: @escaping (Result<Data, Error>) -> Void)
-    func cancelTask(for urlString: String)
 }

@@ -15,10 +15,6 @@ final class NetworkManager: NetworkManagerProtocol {
     
     private var baseComponents: URLComponents
     
-    private var lock = NSLock()
-    
-    private var activeTasks: [String: URLSessionDownloadTask] = [:]
-    
     private init() {
         let config = URLSessionConfiguration.default
         session = URLSession(configuration: config)
@@ -29,7 +25,6 @@ final class NetworkManager: NetworkManagerProtocol {
     }
     
     func getListPhotos(page: Int, perPage: Int, completion: @escaping (Result<[PhotoDTO], Error>) -> Void) {
-        
         guard page > 0 else {
             print("Invalid page number. It should be greater than 0.")
             return
@@ -79,44 +74,18 @@ final class NetworkManager: NetworkManagerProtocol {
     }
     
     func getImage(from urlString: String, completion: @escaping (Result<Data, Error>) -> Void) {
-        lock.lock()
-        guard activeTasks[urlString] == nil else {
-            lock.unlock()
-            return
-        }
-        lock.unlock()
         
         guard let url = URL(string: urlString) else {
             completion(.failure(NetworkError.invalidURL))
             return
         }
         
-        let task = session.downloadTask(with: url) { [weak self] localURL, response, error in
-            guard let self, let localURL, let data = try? Data(contentsOf: localURL) else { return }
-            lock.lock()
-            activeTasks.removeValue(forKey: urlString)
-            lock.unlock()
+        let task = session.dataTask(with: url) { data, response, error in
             let result = NetworkManager.validateNetworkResponse(data: data, response: response, error: error)
             completion(result)
         }
         
-        lock.lock()
-        activeTasks[urlString] = task
-        lock.unlock()
-        
         task.resume()
-    }
-    
-    func cancelTask(for urlString: String) {
-        DispatchQueue.global().async { [weak self] in
-            guard let self else { return }
-            lock.lock()
-            if let task = activeTasks[urlString] {
-                task.cancel()
-                activeTasks.removeValue(forKey: urlString)
-            }
-            lock.unlock()
-        }
     }
     
     private static func validateNetworkResponse(
@@ -124,6 +93,7 @@ final class NetworkManager: NetworkManagerProtocol {
         response: URLResponse?,
         error: Error?
     ) -> Result<Data, Error> {
+        
         if let error {
             return .failure(error)
         }

@@ -7,24 +7,15 @@
 
 import Foundation
 
-protocol GalleryPresenterProtocol: AnyObject {
-    var photos: [Photo] { get }
-    func viewDidLoad()
-    func loadNextPage()
-    func getImage(for photo: Photo, completion: @escaping (Data?) -> Void)
-    func openDetailScreen(for photo: Photo)
-    func cancelTask(for urlString: String)
-}
-
-final class GalleryPresenter: GalleryPresenterProtocol {
+final class GalleryPresenter {
+    
+    // MARK: - Properties
     
     weak var view: GalleryViewProtocol?
     private let router: GalleryRouterProtocol
     private let photoManager: PhotoPaginationManagerProtocol
     
-    var photos: [Photo] {
-        photoManager.photos
-    }
+    // MARK: - Init
     
     init(router: GalleryRouterProtocol, photoManager: PhotoPaginationManagerProtocol) {
         self.router = router
@@ -32,8 +23,36 @@ final class GalleryPresenter: GalleryPresenterProtocol {
         observeDataUpdates()
     }
     
-    func viewDidLoad() {
-        loadNextPage()
+    // MARK: - Methods
+    
+    private func observeDataUpdates() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handlePhotosUpdate(_:)),
+            name: .photosDidUpdate,
+            object: nil
+        )
+    }
+    
+    @objc private func handlePhotosUpdate(_ notification: Notification) {
+        DispatchQueue.main.async { [weak self] in
+            self?.view?.update()
+        }
+    }
+    
+    // MARK: - Deinit
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: .photosDidUpdate, object: nil)
+    }
+}
+
+//MARK: - GalleryPresenterProtocol
+
+extension GalleryPresenter: GalleryPresenterProtocol {
+    
+    var photos: [Photo] {
+        photoManager.photos
     }
     
     func loadNextPage() {
@@ -55,28 +74,5 @@ final class GalleryPresenter: GalleryPresenterProtocol {
                 }
             }
         }
-    }
-    
-    func cancelTask(for urlString: String) {
-        photoManager.cancelTask(for: urlString)
-    }
-    
-    @objc private func handlePhotosUpdate(_ notification: Notification) {
-        DispatchQueue.main.async { [weak self] in
-            self?.view?.update()
-        }
-    }
-    
-    private func observeDataUpdates() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(handlePhotosUpdate(_:)),
-            name: .photosDidUpdate,
-            object: nil
-        )
-    }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: .photosDidUpdate, object: nil)
     }
 }

@@ -9,7 +9,7 @@ import UIKit
 
 final class DetailViewController: UIViewController {
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     let presenter: DetailPresenterProtocol
     
@@ -26,7 +26,7 @@ final class DetailViewController: UIViewController {
     
     required init?(coder: NSCoder) { nil }
     
-    //MARK: - Life cycle
+    // MARK: - Life cycle
     
     override func loadView() {
         super.loadView()
@@ -48,7 +48,7 @@ final class DetailViewController: UIViewController {
         detailView?.willTransition(to: size, with: coordinator)
     }
     
-    //MARK: - Methods
+    // MARK: - Methods
     
     private func configureDetailView() {
         detailView?.setupCollectionViewDataSource(self)
@@ -63,7 +63,7 @@ final class DetailViewController: UIViewController {
     }
 }
 
-//MARK: - DetailViewProtocol
+// MARK: - DetailViewProtocol
 
 extension DetailViewController: DetailViewProtocol {
     
@@ -72,7 +72,7 @@ extension DetailViewController: DetailViewProtocol {
     }
 }
 
-//MARK: - DetailViewCellDelegate
+// MARK: - DetailViewCellDelegate
 
 extension DetailViewController: DetailViewCellDelegate {
     
@@ -85,7 +85,7 @@ extension DetailViewController: DetailViewCellDelegate {
     }
 }
 
-//MARK: - UICollectionViewDataSource
+// MARK: - UICollectionViewDataSource
 
 extension DetailViewController: UICollectionViewDataSource {
     
@@ -129,7 +129,7 @@ extension DetailViewController: UICollectionViewDataSource {
     }
 }
 
-//MARK: - UICollectionViewDelegateFlowLayout
+// MARK: - UICollectionViewDelegateFlowLayout
 
 extension DetailViewController: UICollectionViewDelegateFlowLayout {
     

@@ -9,7 +9,7 @@ import UIKit
 
 final class InfoLabel: UILabel {
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     private let headerText: String
     
@@ -25,7 +25,7 @@ final class InfoLabel: UILabel {
         }
     }
     
-    //MARK: - Init
+    // MARK: - Init
 
     init(header: String) {
         self.headerText = header
@@ -35,7 +35,7 @@ final class InfoLabel: UILabel {
     
     required init?(coder: NSCoder) { return nil }
     
-    //MARK: - Methods
+    // MARK: - Methods
 
     func updateAttributedText() {
         guard let text, !text.isEmpty else {

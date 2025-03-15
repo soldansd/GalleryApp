@@ -59,8 +59,4 @@ final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
     private func notifyObservers() {
         NotificationCenter.default.post(name: .photosDidUpdate, object: nil, userInfo: ["photos": photos])
     }
-    
-    func cancelTask(for urlString: String) {
-        photoProvider.cancelTask(for: urlString)
-    }
 }

@@ -9,11 +9,11 @@ import UIKit
 
 final class HeartButton: UIButton {
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     private var isLiked: Bool
     
-    //MARK: - Init
+    // MARK: - Init
 
     init(isLiked: Bool = false) {
         self.isLiked = isLiked
@@ -23,14 +23,14 @@ final class HeartButton: UIButton {
     
     required init?(coder: NSCoder) { nil }
     
-    //MARK: - Life cycle
+    // MARK: - Life cycle
     
     override func layoutSubviews() {
         super.layoutSubviews()
         layer.cornerRadius = bounds.width / 2
     }
     
-    //MARK: - Methods
+    // MARK: - Methods
     
     func update(isLiked: Bool) {
         self.isLiked = isLiked

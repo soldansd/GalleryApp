@@ -9,20 +9,20 @@ import UIKit
 
 final class DetailRouter {
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     private lazy var builder = DetailBuilder(router: self)
     
     private weak var navigationController: UINavigationController?
     
-    //MARK: - Init
+    // MARK: - Init
     
     init(navigationController: UINavigationController?) {
         self.navigationController = navigationController
     }
 }
 
-//MARK: - DetailRouterProtocol
+// MARK: - DetailRouterProtocol
 
 extension DetailRouter: DetailRouterProtocol {
     

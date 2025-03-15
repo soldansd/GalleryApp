@@ -7,21 +7,25 @@
 
 import UIKit
 
-protocol GalleryRouterProtocol: AnyObject {
+final class GalleryRouter {
     
-    func openDetailScreen(for photo: Photo)
-}
-
-final class GalleryRouter: GalleryRouterProtocol {
+    // MARK: - Properties
     
     private lazy var builder = GalleryBuilder(router: self)
     
     private weak var navigationController: UINavigationController?
     
+    // MARK: - Init
+    
     init(navigationController: UINavigationController?) {
         self.navigationController = navigationController
         self.navigationController?.isNavigationBarHidden = true
     }
+}
+
+// MARK: - GalleryRouterProtocol
+
+extension GalleryRouter: GalleryRouterProtocol {
     
     func openGalleryScreen() {
         let view = builder.assembly()

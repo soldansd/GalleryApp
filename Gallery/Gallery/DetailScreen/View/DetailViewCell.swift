@@ -9,7 +9,7 @@ import UIKit
 
 final class DetailViewCell: UICollectionViewCell {
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     static let reuseIdentifier = "DetailViewCell"
     
@@ -95,7 +95,7 @@ final class DetailViewCell: UICollectionViewCell {
         return stackView
     }()
     
-    //MARK: - Init
+    // MARK: - Init
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -108,7 +108,7 @@ final class DetailViewCell: UICollectionViewCell {
     
     required init?(coder: NSCoder) { nil }
     
-    //MARK: - Life cycle
+    // MARK: - Life cycle
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -120,7 +120,7 @@ final class DetailViewCell: UICollectionViewCell {
         }
     }
     
-    //MARK: - Methods
+    // MARK: - Methods
     
     func update(with photo: Photo) {
         self.photo = photo

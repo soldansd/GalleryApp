@@ -9,7 +9,7 @@ import UIKit
 
 final class DetailView: UIView {
     
-    //MARK: - Properties
+    // MARK: - Properties
     
     private lazy var collectionView: UICollectionView = {
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -32,7 +32,7 @@ final class DetailView: UIView {
         return layout
     }()
     
-    //MARK: - Init
+    // MARK: - Init
     
     init() {
         super.init(frame: .zero)
@@ -41,7 +41,7 @@ final class DetailView: UIView {
     
     required init?(coder: NSCoder) { nil }
     
-    //MARK: - Methods
+    // MARK: - Methods
     
     func setupCollectionViewDataSource(_ dataSource: UICollectionViewDataSource) {
         collectionView.dataSource = dataSource

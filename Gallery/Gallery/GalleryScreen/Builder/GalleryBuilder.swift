@@ -9,11 +9,17 @@ import UIKit
 
 struct GalleryBuilder {
     
+    // MARK: - Properties
+    
     private weak var router: GalleryRouterProtocol?
+    
+    // MARK: - Init
     
     init(router: GalleryRouterProtocol?) {
         self.router = router
     }
+    
+    // MARK: - Methods
     
     func assembly() -> UIViewController {
         guard let router else {

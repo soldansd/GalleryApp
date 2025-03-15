@@ -7,12 +7,9 @@
 
 import UIKit
 
-protocol WaterfallLayoutDelegate: AnyObject {
+final class WaterfallLayout: UICollectionViewLayout {
     
-    func collectionView(_ collectionView: UICollectionView, heightForItemAtIndexPath indexPath: IndexPath) -> CGFloat
-}
-
-class WaterfallLayout: UICollectionViewLayout {
+    // MARK: - Properties
     
     weak var delegate: WaterfallLayoutDelegate?
     
@@ -22,8 +19,17 @@ class WaterfallLayout: UICollectionViewLayout {
         }
     }
     
-    private let cellPadding: CGFloat = 8
+    var columnWidth: CGFloat {
+       return (width - CGFloat(numberOfColumns + 1) * cellPadding) / CGFloat(numberOfColumns)
+    }
+    
+    override var collectionViewContentSize: CGSize {
+        return CGSize(width: width, height: contentHeight)
+    }
+    
     private var contentHeight: CGFloat = 0
+    
+    private let cellPadding: CGFloat = 8
     
     private var attributes: [UICollectionViewLayoutAttributes] = []
     private var lastAttributesForColumn: [UICollectionViewLayoutAttributes?] = []
@@ -35,17 +41,11 @@ class WaterfallLayout: UICollectionViewLayout {
         return collectionView?.bounds.width ?? .zero
     }
     
-    var columnWidth: CGFloat {
-       return (width - CGFloat(numberOfColumns + 1) * cellPadding) / CGFloat(numberOfColumns)
-    }
-    
     private var xOffsetForColumn: [CGFloat] {
         return (0..<numberOfColumns).map { CGFloat($0) * (columnWidth + cellPadding) + cellPadding }
     }
     
-    override var collectionViewContentSize: CGSize {
-        return CGSize(width: width, height: contentHeight)
-    }
+    // MARK: - Methods
     
     func updateLayout() {
         shouldUpdateLayout = true
