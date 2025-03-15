@@ -7,33 +7,17 @@
 
 import UIKit
 
-protocol DetailViewProtocol: AnyObject {
+final class DetailViewController: UIViewController {
     
-    func update()
-}
-
-class DetailViewController: UIViewController, DetailViewProtocol {
+    //MARK: - Properties
     
     let presenter: DetailPresenterProtocol
     
-    private lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .horizontal
-        layout.minimumLineSpacing = 0
-        layout.estimatedItemSize = .zero
-        
-        let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collection.dataSource = self
-        collection.delegate = self
-        collection.isPagingEnabled = true
-        collection.showsHorizontalScrollIndicator = false
-        collection.contentInsetAdjustmentBehavior = .never
-        collection.register(
-            DetailPhotoCollectionViewCell.self,
-            forCellWithReuseIdentifier: DetailPhotoCollectionViewCell.reuseIdentifier
-        )
-        return collection
-    }()
+    private var detailView: DetailView? {
+        return view as? DetailView
+    }
+    
+    // MARK: - Init
     
     init(presenter: DetailPresenterProtocol) {
         self.presenter = presenter
@@ -42,52 +26,66 @@ class DetailViewController: UIViewController, DetailViewProtocol {
     
     required init?(coder: NSCoder) { nil }
     
-    override func viewDidLoad() {
-        
-        view.addSubview(collectionView)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-        
-        scrollToSelectedPhoto()
+    //MARK: - Life cycle
+    
+    override func loadView() {
+        super.loadView()
+        view = DetailView()
     }
     
-    private func scrollToSelectedPhoto() {
-        if let index = presenter.photos.firstIndex(where: { $0.id == presenter.currentPhoto.id }) {
-            let indexPath = IndexPath(item: index, section: 0)
-            //collectionView.reloadData()
-            collectionView.layoutIfNeeded()
-            self.collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: false)
-        }
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        configureDetailView()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        scrollToInitialPhoto()
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        guard let visibleIndexPath = collectionView.indexPathsForVisibleItems.first else {
-                super.viewWillTransition(to: size, with: coordinator)
-                return
-            }
-        
-        coordinator.animate(alongsideTransition: { [weak self] _ in
-            self?.collectionView.reloadData()
-            self?.collectionView.layoutIfNeeded()
-            //self?.collectionView.collectionViewLayout.invalidateLayout()
-            self?.collectionView.scrollToItem(at: visibleIndexPath, at: .centeredHorizontally, animated: false)
-        }, completion: nil)
-        
         super.viewWillTransition(to: size, with: coordinator)
-        
+        detailView?.willTransition(to: size, with: coordinator)
     }
+    
+    //MARK: - Methods
+    
+    private func configureDetailView() {
+        detailView?.setupCollectionViewDataSource(self)
+        detailView?.setupCollectionViewDelegate(self)
+    }
+    
+    private func scrollToInitialPhoto() {
+        if let index = presenter.photos.firstIndex(where: { $0.id == presenter.initialPhoto.id }) {
+            let indexPath = IndexPath(item: index, section: 0)
+            detailView?.scrollToItem(at: indexPath)
+        }
+    }
+}
+
+//MARK: - DetailViewProtocol
+
+extension DetailViewController: DetailViewProtocol {
     
     func update() {
-        collectionView.reloadData()
+        detailView?.update()
+    }
+}
+
+//MARK: - DetailViewCellDelegate
+
+extension DetailViewController: DetailViewCellDelegate {
+    
+    func likeButtonTapped(for photo: Photo) {
+        presenter.updateLikeStatus(photo: photo, isLiked: photo.isLikedByUser)
     }
     
+    func backButtonTapped() {
+        presenter.closeDetailScreen()
+    }
 }
+
+//MARK: - UICollectionViewDataSource
 
 extension DetailViewController: UICollectionViewDataSource {
     
@@ -99,30 +97,24 @@ extension DetailViewController: UICollectionViewDataSource {
         _ collectionView: UICollectionView,
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
+        
         if indexPath.item == presenter.photos.count - 1 {
             presenter.loadNextPage()
         }
         
-        let id = DetailPhotoCollectionViewCell.reuseIdentifier
+        let id = DetailViewCell.reuseIdentifier
         let reusableCell = collectionView.dequeueReusableCell(withReuseIdentifier: id, for: indexPath)
-        guard let cell = reusableCell as? DetailPhotoCollectionViewCell else {
+        guard let cell = reusableCell as? DetailViewCell else {
             return UICollectionViewCell()
         }
         
         let photo = presenter.photos[indexPath.item]
-        cell.configure(with: photo)
         
-        let photoId = photo.id
-        cell.photoId = photoId
-        cell.likeButtonTapped = { [weak self] in
-            self?.presenter.updateLikeStatus(photo: photo, isLiked: !photo.isLikedByUser)
-        }
-        cell.backButtonTapped = { [weak self] in
-            self?.presenter.closeDetailScreen()
-        }
+        cell.update(with: photo)
+        cell.delegate = self
         
         presenter.getImage(for: photo) { data in
-            guard let data, cell.photoId == photoId else {
+            guard let data, cell.photo?.id == photo.id else {
                 return
             }
             
@@ -136,6 +128,8 @@ extension DetailViewController: UICollectionViewDataSource {
         return cell
     }
 }
+
+//MARK: - UICollectionViewDelegateFlowLayout
 
 extension DetailViewController: UICollectionViewDelegateFlowLayout {
     

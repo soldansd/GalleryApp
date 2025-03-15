@@ -9,11 +9,17 @@ import UIKit
 
 struct DetailBuilder {
     
+    //MARK: - Properties
+    
     private weak var router: DetailRouterProtocol?
+    
+    //MARK: - Init
     
     init(router: DetailRouterProtocol?) {
         self.router = router
     }
+    
+    //MARK: - Methods
     
     func assembly(photo: Photo) -> UIViewController {
         guard let router else {

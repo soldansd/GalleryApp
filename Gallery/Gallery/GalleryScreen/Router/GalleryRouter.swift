@@ -20,11 +20,11 @@ final class GalleryRouter: GalleryRouterProtocol {
     
     init(navigationController: UINavigationController?) {
         self.navigationController = navigationController
+        self.navigationController?.isNavigationBarHidden = true
     }
     
     func openGalleryScreen() {
         let view = builder.assembly()
-        navigationController?.isNavigationBarHidden = true
         navigationController?.pushViewController(view, animated: true)
     }
     

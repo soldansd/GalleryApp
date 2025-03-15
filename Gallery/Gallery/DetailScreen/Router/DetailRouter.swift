@@ -7,24 +7,27 @@
 
 import UIKit
 
-protocol DetailRouterProtocol: AnyObject {
-    func openDetailScreen(photo: Photo)
-    func closeDetailScreen()
-}
-
-class DetailRouter: DetailRouterProtocol {
+final class DetailRouter {
+    
+    //MARK: - Properties
     
     private lazy var builder = DetailBuilder(router: self)
     
     private weak var navigationController: UINavigationController?
     
+    //MARK: - Init
+    
     init(navigationController: UINavigationController?) {
         self.navigationController = navigationController
     }
+}
+
+//MARK: - DetailRouterProtocol
+
+extension DetailRouter: DetailRouterProtocol {
     
     func openDetailScreen(photo: Photo) {
         let view = builder.assembly(photo: photo)
-        navigationController?.isNavigationBarHidden = true
         navigationController?.pushViewController(view, animated: true)
     }
     
