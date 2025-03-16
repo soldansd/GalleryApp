@@ -14,4 +14,9 @@ final class MockNavigationController: UINavigationController {
     override func pushViewController(_ viewController: UIViewController, animated: Bool) {
         pushedViewController = viewController
     }
+    
+    override func popViewController(animated: Bool) -> UIViewController? {
+        pushedViewController = nil
+        return pushedViewController
+    }
 }
