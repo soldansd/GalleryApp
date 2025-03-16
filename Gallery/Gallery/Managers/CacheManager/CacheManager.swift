@@ -9,25 +9,31 @@ import Foundation
 
 final class CacheManager: CacheManagerProtocol {
     
+    // MARK: - Properties
+    
     static let shared = CacheManager()
     
-    private let imageCache = NSCache<NSString, NSData>()
+    private let cache = NSCache<NSString, NSData>()
+    
+    // MARK: - Init
     
     private init() {}
     
+    // MARK: - Methods
+    
     func getData(forKey key: String) -> Data? {
-        return imageCache.object(forKey: key as NSString) as Data?
+        return cache.object(forKey: key as NSString) as Data?
     }
     
     func saveData(_ data: Data, forKey key: String) {
-        imageCache.setObject(data as NSData, forKey: key as NSString)
+        cache.setObject(data as NSData, forKey: key as NSString)
     }
     
     func removeData(forKey key: String) {
-        imageCache.removeObject(forKey: key as NSString)
+        cache.removeObject(forKey: key as NSString)
     }
     
     func clearCache() {
-        imageCache.removeAllObjects()
+        cache.removeAllObjects()
     }
 }

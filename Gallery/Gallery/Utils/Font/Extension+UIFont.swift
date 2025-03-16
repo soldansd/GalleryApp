@@ -8,6 +8,7 @@
 import UIKit
 
 extension UIFont {
+    
     static func prostoOneRegular(size: CGFloat) -> UIFont {
         let font = UIFont(name: "ProstoOne-Regular", size: size) ?? UIFont.systemFont(ofSize: size)
         return UIFontMetrics.default.scaledFont(for: font)

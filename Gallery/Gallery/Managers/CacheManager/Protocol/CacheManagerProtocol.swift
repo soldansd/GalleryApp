@@ -8,7 +8,6 @@
 import Foundation
 
 protocol CacheManagerProtocol {
-    
     func getData(forKey key: String) -> Data?
     func saveData(_ data: Data, forKey key: String)
     func removeData(forKey key: String)

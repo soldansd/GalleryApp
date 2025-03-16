@@ -9,11 +9,15 @@ import Foundation
 
 final class NetworkManager: NetworkManagerProtocol {
     
+    // MARK: Properties
+    
     static let shared = NetworkManager()
     
     private let session: URLSession
     
     private var baseComponents: URLComponents
+    
+    // MARK: - Init
     
     private init() {
         let config = URLSessionConfiguration.default
@@ -24,17 +28,10 @@ final class NetworkManager: NetworkManagerProtocol {
         baseComponents.host = "api.unsplash.com"
     }
     
+    // MARK: - Methods
+    
     func getListPhotos(page: Int, perPage: Int, completion: @escaping (Result<[PhotoDTO], Error>) -> Void) {
-        guard page > 0 else {
-            print("Invalid page number. It should be greater than 0.")
-            return
-        }
-        
-        guard (10...30).contains(perPage) else {
-            print("Invalid perPage number. It should be between 10 and 30.")
-            return
-        }
-        
+                
         var urlComponents = baseComponents
         urlComponents.path = "/photos"
         urlComponents.queryItems = [
@@ -43,7 +40,7 @@ final class NetworkManager: NetworkManagerProtocol {
         ]
         
         guard let url = urlComponents.url else {
-            print("Falied to create URL")
+            completion(.failure(NetworkError.invalidURL))
             return
         }
         
@@ -59,12 +56,8 @@ final class NetworkManager: NetworkManagerProtocol {
             
             switch result {
             case .success(let data):
-                do {
-                    let photos = try JSONDecoder().decode([PhotoDTO].self, from: data)
-                    completion(.success(photos))
-                } catch {
-                    completion(.failure(NetworkError.decodingFailed))
-                }
+                completion(Result { try JSONDecoder().decode([PhotoDTO].self, from: data) })
+                
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -73,7 +66,7 @@ final class NetworkManager: NetworkManagerProtocol {
         task.resume()
     }
     
-    func getImage(from urlString: String, completion: @escaping (Result<Data, Error>) -> Void) {
+    func getData(from urlString: String, completion: @escaping (Result<Data, Error>) -> Void) {
         
         guard let url = URL(string: urlString) else {
             completion(.failure(NetworkError.invalidURL))

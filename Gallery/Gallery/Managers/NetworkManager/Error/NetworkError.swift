@@ -12,5 +12,4 @@ enum NetworkError: Error {
     case badResponse
     case invalidStatusCode(Int)
     case noData
-    case decodingFailed
 }

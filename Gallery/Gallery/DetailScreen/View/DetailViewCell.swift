@@ -45,7 +45,6 @@ final class DetailViewCell: UICollectionViewCell {
     
     private let imageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = .blue
         imageView.contentMode = .scaleAspectFit
         imageView.layer.cornerRadius = 19
         imageView.clipsToBounds = true
@@ -55,7 +54,7 @@ final class DetailViewCell: UICollectionViewCell {
     
     private let backButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .secondarySystemBackground
+        button.backgroundColor = .appBackground
         button.layer.cornerRadius = 19
         button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -148,6 +147,7 @@ final class DetailViewCell: UICollectionViewCell {
     }
     
     func setImage(_ image: UIImage) {
+        imageView.backgroundColor = .clear
         imageView.image = image
     }
     

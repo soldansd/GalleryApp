@@ -9,6 +9,8 @@ import Foundation
 
 final class PhotoProvider: PhotoProviderProtocol {
     
+    // MARK: - Properties
+    
     static let shared = PhotoProvider(
         storageManager: StorageManager.shared,
         cacheManager: CacheManager.shared,
@@ -18,6 +20,8 @@ final class PhotoProvider: PhotoProviderProtocol {
     private let storageManager: StorageManagerProtocol
     private let cacheManager: CacheManagerProtocol
     private let networkManager: NetworkManagerProtocol
+    
+    // MARK: - Init
     
     init(
         storageManager: StorageManagerProtocol,
@@ -29,7 +33,10 @@ final class PhotoProvider: PhotoProviderProtocol {
         self.networkManager = networkManager
     }
     
+    // MARK: - Methods
+    
     func getListPhotos(page: Int, perPage: Int, completion: @escaping (Result<[Photo], Error>) -> Void) {
+        
         networkManager.getListPhotos(page: page, perPage: perPage) { [weak self] result in
             guard let self else {
                 return
@@ -45,7 +52,7 @@ final class PhotoProvider: PhotoProviderProtocol {
                     }
                     return photo
                 }
-            
+                
                 completion(.success(photos))
                 
             case .failure(let error):
@@ -55,6 +62,7 @@ final class PhotoProvider: PhotoProviderProtocol {
     }
     
     func getImage(for photo: Photo, completion: @escaping (Result<Data, Error>) -> Void) {
+        
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
             guard let self else { return }
             
@@ -68,10 +76,8 @@ final class PhotoProvider: PhotoProviderProtocol {
                 return
             }
             
-            networkManager.getImage(from: photo.imageURL) { [weak self] result in
-                guard let self else {
-                    return
-                }
+            networkManager.getData(from: photo.imageURL) { result in
+                
                 switch result {
                 case .success(let data):
                     
@@ -82,6 +88,7 @@ final class PhotoProvider: PhotoProviderProtocol {
                     }
                     
                     completion(.success(data))
+                    
                 case .failure(let error):
                     completion(.failure(error))
                 }
@@ -90,6 +97,7 @@ final class PhotoProvider: PhotoProviderProtocol {
     }
     
     func updateLikeStatus(photo: Photo, isLiked: Bool) {
+        
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self else { return }
             let key = "\(photo.id).jpg"

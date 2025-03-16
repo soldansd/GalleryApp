@@ -9,20 +9,26 @@ import Foundation
 
 final class StorageManager: StorageManagerProtocol {
     
+    // MARK: - Properties
+    
     static let shared = StorageManager()
     
     private let fileManager = FileManager.default
     
     private let url: URL
     
+    // MARK: - Init
+    
     private init() {
         url = fileManager
             .urls(for: .documentDirectory, in: .userDomainMask)
             .first!
             .appendingPathComponent("ImageStorage")
+        
         createDirectoryIfNeeded()
-        print(url)
     }
+    
+    // MARK: - Methods
     
     func saveData(_ data: Data, forKey key: String) throws {
         let filePath = url.appendingPathComponent(key)
@@ -40,7 +46,6 @@ final class StorageManager: StorageManagerProtocol {
     
     func removeData(forKey key: String) throws {
         let filePath = url.appendingPathComponent(key)
-        
         do {
             try fileManager.removeItem(at: filePath)
         } catch {

@@ -9,6 +9,8 @@ import Foundation
 
 final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
     
+    // MARK: - Properties
+    
     static let shared = PhotoPaginationManager(photoProvider: PhotoProvider.shared)
     
     private let photoProvider: PhotoProviderProtocol
@@ -17,9 +19,13 @@ final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
     private(set) var photos: [Photo] = []
     private var isLoading = false
     
+    // MARK: - Init
+    
     init(photoProvider: PhotoProviderProtocol) {
         self.photoProvider = photoProvider
     }
+    
+    // MARK: - Methods
     
     func loadNextPage() {
         guard !isLoading else {
@@ -44,16 +50,16 @@ final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
         }
     }
     
+    func getImage(for photo: Photo, completion: @escaping (Result<Data, Error>) -> Void) {
+        photoProvider.getImage(for: photo, completion: completion)
+    }
+    
     func updateLikeStatus(photo: Photo, isLiked: Bool) {
         if let index = photos.firstIndex(where: { $0.id == photo.id }) {
             photoProvider.updateLikeStatus(photo: photo, isLiked: isLiked)
             photos[index].isLikedByUser = isLiked
             notifyObservers()
         }
-    }
-    
-    func getImage(for photo: Photo, completion: @escaping (Result<Data, Error>) -> Void) {
-        photoProvider.getImage(for: photo, completion: completion)
     }
     
     private func notifyObservers() {

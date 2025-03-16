@@ -47,7 +47,7 @@ final class GalleryPresenter {
     }
 }
 
-//MARK: - GalleryPresenterProtocol
+// MARK: - GalleryPresenterProtocol
 
 extension GalleryPresenter: GalleryPresenterProtocol {
     

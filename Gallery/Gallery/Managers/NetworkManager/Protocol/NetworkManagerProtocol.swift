@@ -15,7 +15,7 @@ protocol NetworkManagerProtocol {
         completion: @escaping (Result<[PhotoDTO], Error>) -> Void
     )
     
-    func getImage(
+    func getData(
         from urlString: String,
         completion: @escaping (Result<Data, Error>) -> Void
     )
