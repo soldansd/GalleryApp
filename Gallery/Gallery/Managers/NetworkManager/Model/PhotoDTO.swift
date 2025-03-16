@@ -17,7 +17,6 @@ struct PhotoDTO: Decodable {
     let width: Int
     let height: Int
     let color: String
-    let blurHash: String
     let isLikedByUser: Bool
     
     private enum CodingKeys: String, CodingKey {
@@ -29,7 +28,6 @@ struct PhotoDTO: Decodable {
         case width
         case height
         case color
-        case blurHash = "blur_hash"
         case isLikedByUser = "liked_by_user"
         
         enum Urls: String, CodingKey {
@@ -51,7 +49,6 @@ struct PhotoDTO: Decodable {
         width = try container.decode(Int.self, forKey: .width)
         height = try container.decode(Int.self, forKey: .height)
         color = try container.decode(String.self, forKey: .color)
-        blurHash = try container.decode(String.self, forKey: .blurHash)
         isLikedByUser = try container.decode(Bool.self, forKey: .isLikedByUser)
         
         let urlsContainter = try container.nestedContainer(keyedBy: CodingKeys.Urls.self, forKey: .urls)
@@ -76,7 +73,6 @@ extension PhotoDTO {
             width: self.width,
             height: self.height,
             color: self.color,
-            blurHash: self.blurHash,
             isLikedByUser: self.isLikedByUser
         )
     }

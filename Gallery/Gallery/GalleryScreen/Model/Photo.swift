@@ -17,6 +17,5 @@ struct Photo {
     let width: Int
     let height: Int
     let color: String
-    let blurHash: String
     var isLikedByUser: Bool
 }

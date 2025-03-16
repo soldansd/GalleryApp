@@ -10,9 +10,20 @@
 		A9E656382D7D647400A6DC5F /* Config.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = A9E656372D7D647400A6DC5F /* Config.xcconfig */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		A9F16EF42D87036B00834CB8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = A9E656172D7D619E00A6DC5F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A9E6561E2D7D619E00A6DC5F;
+			remoteInfo = Gallery;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		A9E6561F2D7D619E00A6DC5F /* Gallery.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Gallery.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A9E656372D7D647400A6DC5F /* Config.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Config.xcconfig; sourceTree = "<group>"; };
+		A9F16EF02D87036B00834CB8 /* GalleryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = GalleryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -34,10 +45,22 @@
 			path = Gallery;
 			sourceTree = "<group>";
 		};
+		A9F16EF12D87036B00834CB8 /* GalleryTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = GalleryTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		A9E6561C2D7D619E00A6DC5F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A9F16EED2D87036B00834CB8 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -52,6 +75,7 @@
 			children = (
 				A9E656372D7D647400A6DC5F /* Config.xcconfig */,
 				A9E656212D7D619E00A6DC5F /* Gallery */,
+				A9F16EF12D87036B00834CB8 /* GalleryTests */,
 				A9E656202D7D619E00A6DC5F /* Products */,
 			);
 			sourceTree = "<group>";
@@ -60,6 +84,7 @@
 			isa = PBXGroup;
 			children = (
 				A9E6561F2D7D619E00A6DC5F /* Gallery.app */,
+				A9F16EF02D87036B00834CB8 /* GalleryTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -90,6 +115,30 @@
 			productReference = A9E6561F2D7D619E00A6DC5F /* Gallery.app */;
 			productType = "com.apple.product-type.application";
 		};
+		A9F16EEF2D87036B00834CB8 /* GalleryTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A9F16EF82D87036B00834CB8 /* Build configuration list for PBXNativeTarget "GalleryTests" */;
+			buildPhases = (
+				A9F16EF92D8703BD00834CB8 /* SwiftLint */,
+				A9F16EEC2D87036B00834CB8 /* Sources */,
+				A9F16EED2D87036B00834CB8 /* Frameworks */,
+				A9F16EEE2D87036B00834CB8 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				A9F16EF52D87036B00834CB8 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				A9F16EF12D87036B00834CB8 /* GalleryTests */,
+			);
+			name = GalleryTests;
+			packageProductDependencies = (
+			);
+			productName = GalleryTests;
+			productReference = A9F16EF02D87036B00834CB8 /* GalleryTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -102,6 +151,10 @@
 				TargetAttributes = {
 					A9E6561E2D7D619E00A6DC5F = {
 						CreatedOnToolsVersion = 16.2;
+					};
+					A9F16EEF2D87036B00834CB8 = {
+						CreatedOnToolsVersion = 16.2;
+						TestTargetID = A9E6561E2D7D619E00A6DC5F;
 					};
 				};
 			};
@@ -123,6 +176,7 @@
 			projectRoot = "";
 			targets = (
 				A9E6561E2D7D619E00A6DC5F /* Gallery */,
+				A9F16EEF2D87036B00834CB8 /* GalleryTests */,
 			);
 		};
 /* End PBXProject section */
@@ -136,10 +190,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A9F16EEE2D87036B00834CB8 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		A94514BE2D7D7505003FE8EE /* SwiftLint */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = SwiftLint;
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "SWIFT_PACKAGE_DIR=\"${BUILD_DIR%Build/*}SourcePackages/artifacts\"\nSWIFTLINT_CMD=$(ls \"$SWIFT_PACKAGE_DIR\"/swiftlintplugins/SwiftLintBinary/SwiftLintBinary.artifactbundle/swiftlint-*-macos/bin/swiftlint | head -n 1)\n\nif test -f \"$SWIFTLINT_CMD\" 2>&1\nthen\n    \"$SWIFTLINT_CMD\"\nelse\n    echo \"warning: `swiftlint` command not found - See https://github.com/realm/SwiftLint#installation for installation instructions.\"\nfi\n";
+		};
+		A9F16EF92D8703BD00834CB8 /* SwiftLint */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
@@ -168,7 +248,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A9F16EEC2D87036B00834CB8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A9F16EF52D87036B00834CB8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A9E6561E2D7D619E00A6DC5F /* Gallery */;
+			targetProxy = A9F16EF42D87036B00834CB8 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		A9E656332D7D619F00A6DC5F /* Debug */ = {
@@ -358,6 +453,54 @@
 			};
 			name = Release;
 		};
+		A9F16EF62D87036B00834CB8 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4RQ5G2BLCM;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = daniilsolovyev.GalleryTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Gallery.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Gallery";
+			};
+			name = Debug;
+		};
+		A9F16EF72D87036B00834CB8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4RQ5G2BLCM;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = daniilsolovyev.GalleryTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Gallery.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Gallery";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -375,6 +518,15 @@
 			buildConfigurations = (
 				A9E656332D7D619F00A6DC5F /* Debug */,
 				A9E656342D7D619F00A6DC5F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A9F16EF82D87036B00834CB8 /* Build configuration list for PBXNativeTarget "GalleryTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A9F16EF62D87036B00834CB8 /* Debug */,
+				A9F16EF72D87036B00834CB8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

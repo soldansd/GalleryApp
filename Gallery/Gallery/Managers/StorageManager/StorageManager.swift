@@ -32,11 +32,7 @@ final class StorageManager: StorageManagerProtocol {
     
     func saveData(_ data: Data, forKey key: String) throws {
         let filePath = url.appendingPathComponent(key)
-        do {
-            try data.write(to: filePath)
-        } catch {
-            throw StorageManagerError.saveFailed
-        }
+        try data.write(to: filePath)
     }
     
     func getData(forKey key: String) -> Data? {
@@ -46,11 +42,7 @@ final class StorageManager: StorageManagerProtocol {
     
     func removeData(forKey key: String) throws {
         let filePath = url.appendingPathComponent(key)
-        do {
-            try fileManager.removeItem(at: filePath)
-        } catch {
-            throw StorageManagerError.removeFailed
-        }
+        try fileManager.removeItem(at: filePath)
     }
     
     private func createDirectoryIfNeeded() {
