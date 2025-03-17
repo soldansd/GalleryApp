@@ -96,12 +96,22 @@ Additionally, both **PhotoProvider** and **PhotoPaginationManager** provide the 
 #### **Image Gallery Screen** 📷
 
 <div align="center">
-  <img src="docs/screenshots/GalleryScreen1.png" alt="Screenshot 1" width="320">
-  <img src="docs/screenshots/GalleryScreen2.png" alt="Screenshot 2" width="320">
-  <img src="docs/screenshots/GalleryScreen3.png" alt="Screenshot 3" width="320">
-  <img src="docs/screenshots/GalleryScreen4.png" alt="Screenshot 4" width="320">
+    <img src="docs/screenshots/GalleryScreen1.png" alt="Screenshot 1" width="320">
+    <img src="docs/screenshots/GalleryScreen2.png" alt="Screenshot 2" width="320">
+    <img src="docs/screenshots/GalleryScreen3.png" alt="Screenshot 3" width="320">
+    <img src="docs/screenshots/GalleryScreen4.png" alt="Screenshot 4" width="320">
     <img src="docs/screenshots/GalleryScreen5.png" alt="Screenshot 5" width="800">
-      <img src="docs/screenshots/GalleryScreen6.png" alt="Screenshot 6" width="800">
+    <img src="docs/screenshots/GalleryScreen6.png" alt="Screenshot 6" width="800">
+</div>
+
+#### **Image Detail Screen** 🌅
+
+<div align="center">
+    <img src="docs/screenshots/DetailScreen1.png" alt="Screenshot 1" width="320">
+    <img src="docs/screenshots/DetailScreen2.png" alt="Screenshot 2" width="320">
+    <img src="docs/screenshots/DetailScreen3.png" alt="Screenshot 3" width="800">
+    <img src="docs/screenshots/DetailScreen4.png" alt="Screenshot 4" width="800">
+    <img src="docs/screenshots/DetailScreen5.png" alt="Screenshot 5" width="800">
 </div>
 
 ## **Installation & Configuration** ⚙️
