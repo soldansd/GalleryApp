@@ -37,6 +37,9 @@ This project was developed as a demonstration of iOS development abilities. The 
 - The app supports both **light and dark themes**.
 - The **app’s icon** dynamically changes to match the selected theme.
 
+#### **Fonts** 📖 
+- **Custom fonts** are used throughout the app to enhance the visual appeal and provide a unique, polished look.
+
 ---
 
 ## Technical Solutions 💡
@@ -87,6 +90,19 @@ Additionally, both **PhotoProvider** and **PhotoPaginationManager** provide the 
 - App was created with Xcode 16.2
 
 ---
+
+## Demo 📲
+
+#### **Image Gallery Screen** 📷
+
+<div align="center">
+  <img src="docs/screenshots/GalleryScreen1.png" alt="Screenshot 1" width="320">
+  <img src="docs/screenshots/GalleryScreen2.png" alt="Screenshot 2" width="320">
+  <img src="docs/screenshots/GalleryScreen3.png" alt="Screenshot 3" width="320">
+  <img src="docs/screenshots/GalleryScreen4.png" alt="Screenshot 4" width="320">
+    <img src="docs/screenshots/GalleryScreen5.png" alt="Screenshot 5" width="800">
+      <img src="docs/screenshots/GalleryScreen6.png" alt="Screenshot 6" width="800">
+</div>
 
 ## **Installation & Configuration** ⚙️
 1. Clone the repository:
