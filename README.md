@@ -93,7 +93,11 @@ Additionally, both **PhotoProvider** and **PhotoPaginationManager** provide the 
 
 ## Demo 📲
 
-#### **Image Gallery Screen** 📷
+
+https://github.com/user-attachments/assets/6eaad0a5-c0c7-4a78-ad06-e54aad2fd1f3
+
+
+### **Image Gallery Screen** 📷
 
 <div align="center">
     <img src="docs/screenshots/GalleryScreen1.png" alt="Screenshot 1" width="320">
@@ -104,7 +108,7 @@ Additionally, both **PhotoProvider** and **PhotoPaginationManager** provide the 
     <img src="docs/screenshots/GalleryScreen6.png" alt="Screenshot 6" width="800">
 </div>
 
-#### **Image Detail Screen** 🌅
+### **Image Detail Screen** 🌅
 
 <div align="center">
     <img src="docs/screenshots/DetailScreen1.png" alt="Screenshot 1" width="320">
@@ -113,6 +117,8 @@ Additionally, both **PhotoProvider** and **PhotoPaginationManager** provide the 
     <img src="docs/screenshots/DetailScreen4.png" alt="Screenshot 4" width="800">
     <img src="docs/screenshots/DetailScreen5.png" alt="Screenshot 5" width="800">
 </div>
+
+---
 
 ## **Installation & Configuration** ⚙️
 1. Clone the repository:
