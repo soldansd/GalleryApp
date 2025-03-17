@@ -63,6 +63,6 @@ final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
     }
     
     private func notifyObservers() {
-        NotificationCenter.default.post(name: .photosDidUpdate, object: nil, userInfo: ["photos": photos])
+        NotificationCenter.default.post(name: .photosDidUpdate, object: nil)
     }
 }
