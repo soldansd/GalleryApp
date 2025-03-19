@@ -16,7 +16,7 @@ final class GalleryRouter {
         photoManager: photoManager,
         observedNotification: observedNotification
     )
-    private let photoManager: PhotoPaginationManagerProtocol
+    private let photoManager: PhotoManagerProtocol
     private let observedNotification: Notification.Name
     
     private weak var navigationController: UINavigationController?
@@ -25,7 +25,7 @@ final class GalleryRouter {
     
     init(
         navigationController: UINavigationController?,
-        photoManager: PhotoPaginationManagerProtocol,
+        photoManager: PhotoManagerProtocol,
         observedNotification: Notification.Name
     ) {
         self.navigationController = navigationController

@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
+final class PhotoManager: PhotoManagerProtocol {
     
     // MARK: - Properties
     

@@ -33,39 +33,23 @@ final class GalleryViewController: UIViewController {
     override func loadView() {
         super.loadView()
         view = GalleryView()
-        print(#function)
-        print(presenter.observedNotification)
-        print(view.bounds.size)
-        print()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         presenter.initialLoad()
         configureGalleryView()
-        print(#function)
-        print(presenter.observedNotification)
-        print(view.bounds.size)
-        print()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         galleryView?.updateNumberOfColumns(to: lastTransitionSize)
-        print(#function)
-        print(presenter.observedNotification)
-        print(view.bounds.size)
-        print()
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         galleryView?.willTransition(to: size, with: coordinator)
         lastTransitionSize = size
-        print(#function)
-        print(presenter.observedNotification)
-        print(size)
-        print()
     }
     
     // MARK: - Methods
@@ -120,9 +104,7 @@ extension GalleryViewController: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         
-        if indexPath.item == presenter.photos.count - 1 {
-            presenter.loadNextPage()
-        }
+        presenter.updateIfNeeded(index: indexPath.item)
         
         let id = GalleryViewCell.reuseIdentifier
         let reusableCell = collectionView.dequeueReusableCell(withReuseIdentifier: id, for: indexPath)

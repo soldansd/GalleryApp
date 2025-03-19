@@ -35,38 +35,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             networkManager: networkManager
         )
         
-        let photoManager = PhotoPaginationManager(photoProvider: photoProvider)
+        let photoManager = PhotoManager(photoProvider: photoProvider)
         
-        let galleryNavigationController = UINavigationController()
-        galleryNavigationController.tabBarItem.title = "Gallery"
-        galleryNavigationController.tabBarItem.image = UIImage(systemName: "photo.on.rectangle.angled")
-        galleryNavigationController.tabBarItem.selectedImage = UIImage(systemName: "photo.on.rectangle.angled.fill")
-        galleryNavigationController.tabBarItem.tag = 0
-        
-        let galleryRouter = GalleryRouter(
-            navigationController: galleryNavigationController,
-            photoManager: photoManager,
-            observedNotification: .photosDidUpdate
-        )
-        
-        let favouriteNavigationController = UINavigationController()
-        favouriteNavigationController.tabBarItem.title = "Favourite"
-        favouriteNavigationController.tabBarItem.image = UIImage(systemName: "heart")
-        favouriteNavigationController.tabBarItem.selectedImage = UIImage(systemName: "heart.fill")
-        favouriteNavigationController.tabBarItem.tag = 1
-
-        let favouriteRouter = GalleryRouter(
-            navigationController: favouriteNavigationController,
-            photoManager: photoManager,
-            observedNotification: .likedPhotosDidUpdate
-        )
-        
-        let tabBarController = UITabBarController()
-        tabBarController.viewControllers = [galleryNavigationController, favouriteNavigationController]
-        tabBarController.tabBar.tintColor = .appTint
-        
-        galleryRouter.openGalleryScreen()
-        favouriteRouter.openGalleryScreen()
+        let tabBarController = GalleryTabBarController(photoManager: photoManager)
         
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()

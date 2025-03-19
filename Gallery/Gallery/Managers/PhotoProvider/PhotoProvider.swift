@@ -38,16 +38,26 @@ final class PhotoProvider: PhotoProviderProtocol {
             
             switch result {
             case .success(let photosDTO):
-                
-                let photos = photosDTO.map { dto -> Photo in
-                    var photo = dto.toModel()
-                    if self.storageManager.getData(forKey: "\(photo.id)") != nil {
-                        photo.isLikedByUser = true
-                    }
-                    return photo
-                }
-                
+                let photos = photosDTO.map { self.processPhoto($0) }
                 completion(.success(photos))
+                
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func getPhoto(id: String, completion: @escaping (Result<Photo, Error>) -> Void) {
+        
+        networkManager.getPhoto(id: id) { [weak self] result in
+            guard let self else {
+                return
+            }
+            
+            switch result {
+            case .success(let photoDTO):
+                let photo = processPhoto(photoDTO)
+                completion(.success(photo))
                 
             case .failure(let error):
                 completion(.failure(error))
@@ -114,27 +124,11 @@ final class PhotoProvider: PhotoProviderProtocol {
         return storageManager.getAllStoredFileNames()
     }
     
-    func getPhoto(id: String, completion: @escaping (Result<Photo, Error>) -> Void) {
-        
-        networkManager.getPhoto(id: id) { [weak self] result in
-            guard let self else {
-                return
-            }
-            
-            switch result {
-            case .success(let photoDTO):
-                
-                var photo = photoDTO.toModel()
-                
-                if self.storageManager.getData(forKey: "\(photo.id)") != nil {
-                    photo.isLikedByUser = true
-                }
-                
-                completion(.success(photo))
-                
-            case .failure(let error):
-                completion(.failure(error))
-            }
+    private func processPhoto(_ photoDTO: PhotoDTO) -> Photo {
+        var photo = photoDTO.toModel()
+        if storageManager.getData(forKey: "\(photo.id)") != nil {
+            photo.isLikedByUser = true
         }
+        return photo
     }
 }

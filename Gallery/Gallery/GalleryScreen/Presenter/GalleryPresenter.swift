@@ -13,15 +13,15 @@ final class GalleryPresenter {
     
     weak var view: GalleryViewProtocol?
     private let router: GalleryRouterProtocol
-    private let photoManager: PhotoPaginationManagerProtocol
+    private let photoManager: PhotoManagerProtocol
     private(set) var photos: [Photo] = []
-    let observedNotification: Notification.Name
+    private let observedNotification: Notification.Name
     
     // MARK: - Init
     
     init(
         router: GalleryRouterProtocol,
-        photoManager: PhotoPaginationManagerProtocol,
+        photoManager: PhotoManagerProtocol,
         observedNotification: Notification.Name
     ) {
         self.router = router
@@ -85,6 +85,12 @@ extension GalleryPresenter: GalleryPresenterProtocol {
                     completion(nil)
                 }
             }
+        }
+    }
+    
+    func updateIfNeeded(index: Int) {
+        if index == photos.count - 1, observedNotification == .photosDidUpdate {
+            loadNextPage()
         }
     }
 }

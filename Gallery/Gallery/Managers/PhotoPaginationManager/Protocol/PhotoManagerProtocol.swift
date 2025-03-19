@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol PhotoPaginationManagerProtocol {
+protocol PhotoManagerProtocol {
     var fetchedPhotos: [Photo] { get }
     func loadNextPage()
     func updateLikeStatus(photo: Photo)

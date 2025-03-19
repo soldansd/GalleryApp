@@ -12,14 +12,14 @@ struct GalleryBuilder {
     // MARK: - Properties
     
     private weak var router: GalleryRouterProtocol?
-    private let photoManager: PhotoPaginationManagerProtocol
+    private let photoManager: PhotoManagerProtocol
     private let observedNotification: Notification.Name
     
     // MARK: - Init
     
     init(
         router: GalleryRouterProtocol?,
-        photoManager: PhotoPaginationManagerProtocol,
+        photoManager: PhotoManagerProtocol,
         observedNotification: Notification.Name
     ) {
         self.router = router

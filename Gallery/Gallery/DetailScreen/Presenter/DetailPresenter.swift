@@ -13,7 +13,7 @@ final class DetailPresenter {
     
     weak var view: DetailViewProtocol?
     private let router: DetailRouterProtocol
-    private let photoManager: PhotoPaginationManagerProtocol
+    private let photoManager: PhotoManagerProtocol
     let initialPhoto: Photo
     private(set) var photos: [Photo]
     let observedNotification: Notification.Name
@@ -22,7 +22,7 @@ final class DetailPresenter {
     
     init(
         router: DetailRouterProtocol,
-        photoManager: PhotoPaginationManagerProtocol,
+        photoManager: PhotoManagerProtocol,
         initialPhoto: Photo,
         photos: [Photo],
         observedNotification: Notification.Name

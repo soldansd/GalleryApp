@@ -38,9 +38,6 @@ final class WaterfallLayout: UICollectionViewLayout {
     private var shouldUpdateLayout = true
     
     private var width: CGFloat {
-        print("WaterfallLayout - width")
-        print(collectionView?.bounds.width ?? .zero)
-        print()
         return collectionView?.bounds.width ?? .zero
     }
     

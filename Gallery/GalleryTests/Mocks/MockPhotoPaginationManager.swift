@@ -8,7 +8,7 @@
 import Foundation
 @testable import Gallery
 
-class MockPhotoPaginationManager: PhotoPaginationManagerProtocol {
+class MockPhotoPaginationManager: PhotoManagerProtocol {
     
     var loadNextPageCalled = false
     var updateLikeStatusCalled = false

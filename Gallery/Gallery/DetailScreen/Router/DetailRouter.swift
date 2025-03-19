@@ -18,14 +18,14 @@ final class DetailRouter {
     )
     
     private weak var navigationController: UINavigationController?
-    private let photoManager: PhotoPaginationManagerProtocol
+    private let photoManager: PhotoManagerProtocol
     private let observedNotification: Notification.Name
     
     // MARK: - Init
     
     init(
         navigationController: UINavigationController?,
-        photoManager: PhotoPaginationManagerProtocol,
+        photoManager: PhotoManagerProtocol,
         observedNotification: Notification.Name
     ) {
         self.navigationController = navigationController
