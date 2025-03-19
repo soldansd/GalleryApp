@@ -27,7 +27,7 @@ final class GalleryViewCell: UICollectionViewCell {
     private let heartImageView: UIImageView = {
         let heart = UIImageView()
         heart.image = UIImage(systemName: "heart.fill")
-        heart.tintColor = .red
+        heart.tintColor = .appTint
         heart.translatesAutoresizingMaskIntoConstraints = false
         heart.isHidden = true
         return heart

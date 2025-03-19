@@ -14,8 +14,12 @@ final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
     private let photoProvider: PhotoProviderProtocol
     private var nextPage = 1
     private var perPage = 30
-    private(set) var photos: [Photo] = []
-    private var isLoading = false
+    
+    private(set) var fetchedPhotos: [Photo] = []
+    private var isLoadingNextPage = false
+    
+    private(set) var likedPhotos: [Photo] = []
+    private var isLoadingLikedPhotos = false
     
     // MARK: - Init
     
@@ -23,14 +27,25 @@ final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
         self.photoProvider = photoProvider
     }
     
+    func initialLoad(_ type: Notification.Name) {
+        switch type {
+        case .photosDidUpdate:
+            loadNextPage()
+        case .likedPhotosDidUpdate:
+            loadLikedPhotos()
+        default:
+            break
+        }
+    }
+    
     // MARK: - Methods
     
     func loadNextPage() {
-        guard !isLoading else {
+        guard !isLoadingNextPage else {
             return
         }
         
-        isLoading = true
+        isLoadingNextPage = true
         
         photoProvider.getListPhotos(page: nextPage, perPage: perPage) { [weak self] result in
             guard let self else {
@@ -41,10 +56,10 @@ final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
                 return
             }
             
-            self.photos.append(contentsOf: photosPage)
+            self.fetchedPhotos.append(contentsOf: photosPage)
             self.nextPage += 1
-            self.isLoading = false
-            notifyObservers()
+            self.isLoadingNextPage = false
+            notifyFetchedPhotosObservers()
         }
     }
     
@@ -52,15 +67,59 @@ final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
         photoProvider.getImage(for: photo, completion: completion)
     }
     
-    func updateLikeStatus(photo: Photo, isLiked: Bool) {
-        if let index = photos.firstIndex(where: { $0.id == photo.id }) {
-            photoProvider.updateLikeStatus(photo: photo, isLiked: isLiked)
-            photos[index].isLikedByUser = isLiked
-            notifyObservers()
+    func updateLikeStatus(photo: Photo) {
+        
+        if photo.isLikedByUser {
+            likedPhotos.append(photo)
+        } else if let index = likedPhotos.firstIndex(where: { $0.id == photo.id }) {
+            likedPhotos.remove(at: index)
+        }
+        
+        if let index = fetchedPhotos.firstIndex(where: { $0.id == photo.id }) {
+            fetchedPhotos[index].isLikedByUser = photo.isLikedByUser
+        }
+        
+        photoProvider.updateLikeStatus(photo: photo)
+        notifyAllObservers()
+    }
+    
+    private func loadLikedPhotos() {
+        guard !isLoadingLikedPhotos else { return }
+        
+        isLoadingLikedPhotos = true
+        
+        let likedPhotoIDs = photoProvider.getAllStoredFileNames()
+        likedPhotos.removeAll()
+        for id in likedPhotoIDs {
+            photoProvider.getPhoto(id: id) { [weak self] result in
+                guard let self else {
+                    return
+                }
+                
+                guard case .success(let photo) = result else {
+                    return
+                }
+                
+                likedPhotos.append(photo)
+                
+                if likedPhotos.count == likedPhotoIDs.count {
+                    isLoadingLikedPhotos = false
+                    notifyLikedPhotosObservers()
+                }
+            }
         }
     }
     
-    private func notifyObservers() {
-        NotificationCenter.default.post(name: .photosDidUpdate, object: nil)
+    private func notifyAllObservers() {
+        notifyLikedPhotosObservers()
+        notifyFetchedPhotosObservers()
+    }
+    
+    private func notifyLikedPhotosObservers() {
+        NotificationCenter.default.post(name: .likedPhotosDidUpdate, object: likedPhotos)
+    }
+    
+    private func notifyFetchedPhotosObservers() {
+        NotificationCenter.default.post(name: .photosDidUpdate, object: fetchedPhotos)
     }
 }

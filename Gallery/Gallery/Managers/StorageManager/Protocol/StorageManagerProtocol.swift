@@ -11,4 +11,5 @@ protocol StorageManagerProtocol {
     func saveData(_ data: Data, forKey key: String) throws
     func getData(forKey key: String) -> Data?
     func removeData(forKey key: String) throws
+    func getAllStoredFileNames() -> [String]
 }

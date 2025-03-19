@@ -11,16 +11,26 @@ final class DetailRouter {
     
     // MARK: - Properties
     
-    private lazy var builder = DetailBuilder(router: self, photoManager: photoManager)
+    private lazy var builder = DetailBuilder(
+        router: self,
+        photoManager: photoManager,
+        observedNotification: observedNotification
+    )
     
     private weak var navigationController: UINavigationController?
     private let photoManager: PhotoPaginationManagerProtocol
+    private let observedNotification: Notification.Name
     
     // MARK: - Init
     
-    init(navigationController: UINavigationController?, photoManager: PhotoPaginationManagerProtocol) {
+    init(
+        navigationController: UINavigationController?,
+        photoManager: PhotoPaginationManagerProtocol,
+        observedNotification: Notification.Name
+    ) {
         self.navigationController = navigationController
         self.photoManager = photoManager
+        self.observedNotification = observedNotification
     }
 }
 
@@ -28,12 +38,14 @@ final class DetailRouter {
 
 extension DetailRouter: DetailRouterProtocol {
     
-    func openDetailScreen(photo: Photo) {
-        let view = builder.assembly(photo: photo)
+    func openDetailScreen(photo: Photo, photos: [Photo]) {
+        let view = builder.assembly(photo: photo, photos: photos)
+        navigationController?.tabBarController?.tabBar.isHidden = true
         navigationController?.pushViewController(view, animated: true)
     }
     
     func closeDetailScreen() {
         navigationController?.popViewController(animated: true)
+        navigationController?.tabBarController?.tabBar.isHidden = false
     }
 }

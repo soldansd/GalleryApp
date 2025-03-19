@@ -38,6 +38,9 @@ final class WaterfallLayout: UICollectionViewLayout {
     private var shouldUpdateLayout = true
     
     private var width: CGFloat {
+        print("WaterfallLayout - width")
+        print(collectionView?.bounds.width ?? .zero)
+        print()
         return collectionView?.bounds.width ?? .zero
     }
     
@@ -52,14 +55,14 @@ final class WaterfallLayout: UICollectionViewLayout {
         invalidateLayout()
     }
     
+    func reloadLayout() {
+        previousCountOfElements = 0
+        attributes = []
+        lastAttributesForColumn = Array(repeating: nil, count: numberOfColumns)
+    }
+    
     override func prepare() {
         guard shouldUpdateLayout, let collectionView else { return }
-        
-        if lastAttributesForColumn.count != numberOfColumns {
-            previousCountOfElements = 0
-            attributes = []
-            lastAttributesForColumn = Array(repeating: nil, count: numberOfColumns)
-        }
         
         let firstNewItem = previousCountOfElements
         let lastNewItem = collectionView.numberOfItems(inSection: 0)

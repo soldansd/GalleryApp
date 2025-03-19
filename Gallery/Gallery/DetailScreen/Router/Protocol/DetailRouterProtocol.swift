@@ -6,6 +6,6 @@
 //
 
 protocol DetailRouterProtocol: AnyObject {
-    func openDetailScreen(photo: Photo)
+    func openDetailScreen(photo: Photo, photos: [Photo])
     func closeDetailScreen()
 }

@@ -79,6 +79,38 @@ final class NetworkManager: NetworkManagerProtocol {
         task.resume()
     }
     
+    func getPhoto(id: String, completion: @escaping (Result<PhotoDTO, Error>) -> Void) {
+        
+        var urlComponents = baseComponents
+        urlComponents.path = "/photos/\(id)"
+        
+        guard let url = urlComponents.url else {
+            completion(.failure(NetworkError.invalidURL))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+        request.setValue("v1", forHTTPHeaderField: "Accept-Version")
+        let apiKey = "Client-ID " + (Bundle.main.infoDictionary?["API_KEY"] as? String ?? "")
+        request.setValue(apiKey, forHTTPHeaderField: "Authorization")
+        
+        let task = session.dataTask(with: request) { data, response, error in
+            let result = NetworkManager.validateNetworkResponse(data: data, response: response, error: error)
+            
+            switch result {
+                
+            case .success(let data):
+                completion(Result { try JSONDecoder().decode(PhotoDTO.self, from: data) })
+                
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+        
+        task.resume()
+    }
+    
     private static func validateNetworkResponse(
         data: Data?,
         response: URLResponse?,

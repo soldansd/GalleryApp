@@ -37,13 +37,38 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         let photoManager = PhotoPaginationManager(photoProvider: photoProvider)
         
-        let navigationController = UINavigationController()
+        let galleryNavigationController = UINavigationController()
+        galleryNavigationController.tabBarItem.title = "Gallery"
+        galleryNavigationController.tabBarItem.image = UIImage(systemName: "photo.on.rectangle.angled")
+        galleryNavigationController.tabBarItem.selectedImage = UIImage(systemName: "photo.on.rectangle.angled.fill")
+        galleryNavigationController.tabBarItem.tag = 0
+        
         let galleryRouter = GalleryRouter(
-            navigationController: navigationController,
-            photoManager: photoManager
+            navigationController: galleryNavigationController,
+            photoManager: photoManager,
+            observedNotification: .photosDidUpdate
         )
+        
+        let favouriteNavigationController = UINavigationController()
+        favouriteNavigationController.tabBarItem.title = "Favourite"
+        favouriteNavigationController.tabBarItem.image = UIImage(systemName: "heart")
+        favouriteNavigationController.tabBarItem.selectedImage = UIImage(systemName: "heart.fill")
+        favouriteNavigationController.tabBarItem.tag = 1
+
+        let favouriteRouter = GalleryRouter(
+            navigationController: favouriteNavigationController,
+            photoManager: photoManager,
+            observedNotification: .likedPhotosDidUpdate
+        )
+        
+        let tabBarController = UITabBarController()
+        tabBarController.viewControllers = [galleryNavigationController, favouriteNavigationController]
+        tabBarController.tabBar.tintColor = .appTint
+        
         galleryRouter.openGalleryScreen()
-        window?.rootViewController = navigationController
+        favouriteRouter.openGalleryScreen()
+        
+        window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
     }
     

@@ -13,6 +13,8 @@ protocol DetailPresenterProtocol: AnyObject {
     var initialPhoto: Photo { get }
     func loadNextPage()
     func getImage(for photo: Photo, completion: @escaping (Data?) -> Void)
-    func updateLikeStatus(photo: Photo, isLiked: Bool)
+    func updateLikeStatus(photo: Photo)
     func closeDetailScreen()
+    var observedNotification: Notification.Name { get }
+    func updateIfNeeded(index: Int)
 }

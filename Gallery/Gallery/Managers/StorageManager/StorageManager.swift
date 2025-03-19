@@ -44,6 +44,23 @@ final class StorageManager: StorageManagerProtocol {
         try fileManager.removeItem(at: filePath)
     }
     
+    func getAllStoredFileNames() -> [String] {
+        var storedFileNames: [String] = []
+        
+        do {
+            let filePaths = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
+            
+            for filePath in filePaths {
+                guard filePath.lastPathComponent.first != "." else { continue }
+                storedFileNames.append(filePath.lastPathComponent)
+            }
+        } catch {
+            print("Failed to get stored files: \(error)")
+        }
+        
+        return storedFileNames
+    }
+    
     private func createDirectoryIfNeeded() {
         if !fileManager.fileExists(atPath: url.path) {
             do {

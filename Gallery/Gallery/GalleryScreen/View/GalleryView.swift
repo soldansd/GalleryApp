@@ -53,6 +53,10 @@ final class GalleryView: UIView {
         layout.updateLayout()
     }
     
+    func reload() {
+        layout.reloadLayout()
+    }
+    
     func willTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         coordinator.animate(alongsideTransition: { [weak self] _ in
             self?.updateNumberOfColumns(to: size)
@@ -60,6 +64,7 @@ final class GalleryView: UIView {
     }
     
     func updateNumberOfColumns(to size: CGSize) {
+        
         if size.width > 1000 {
             layout.numberOfColumns = 4
         } else if size.width > 750 {
@@ -67,8 +72,10 @@ final class GalleryView: UIView {
         } else {
             layout.numberOfColumns = 2
         }
+        
         collectionView.reloadData()
         collectionView.collectionViewLayout.invalidateLayout()
+        reload()
     }
     
     private func configure() {

@@ -15,13 +15,23 @@ final class DetailPresenter {
     private let router: DetailRouterProtocol
     private let photoManager: PhotoPaginationManagerProtocol
     let initialPhoto: Photo
+    private(set) var photos: [Photo]
+    let observedNotification: Notification.Name
     
     // MARK: - Init
     
-    init(router: DetailRouterProtocol, photoManager: PhotoPaginationManagerProtocol, photo: Photo) {
+    init(
+        router: DetailRouterProtocol,
+        photoManager: PhotoPaginationManagerProtocol,
+        initialPhoto: Photo,
+        photos: [Photo],
+        observedNotification: Notification.Name
+    ) {
         self.router = router
         self.photoManager = photoManager
-        self.initialPhoto = photo
+        self.initialPhoto = initialPhoto
+        self.photos = photos
+        self.observedNotification = observedNotification
         observeDataUpdates()
     }
     
@@ -31,14 +41,24 @@ final class DetailPresenter {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handlePhotosUpdate(_:)),
-            name: .photosDidUpdate,
+            name: observedNotification,
             object: nil
         )
     }
     
     @objc private func handlePhotosUpdate(_ notification: Notification) {
+        guard let fetchedPhotos = notification.object as? [Photo] else { return }
+        self.photos = fetchedPhotos
         DispatchQueue.main.async { [weak self] in
-            self?.view?.update()
+            
+            guard let self else { return }
+            
+            guard !self.photos.isEmpty else {
+                closeDetailScreen()
+                return
+            }
+            
+            self.view?.update()
         }
     }
     
@@ -53,16 +73,12 @@ final class DetailPresenter {
 
 extension DetailPresenter: DetailPresenterProtocol {
     
-    var photos: [Photo] {
-        photoManager.photos
-    }
-    
     func loadNextPage() {
         photoManager.loadNextPage()
     }
     
-    func updateLikeStatus(photo: Photo, isLiked: Bool) {
-        photoManager.updateLikeStatus(photo: photo, isLiked: isLiked)
+    func updateLikeStatus(photo: Photo) {
+        photoManager.updateLikeStatus(photo: photo)
     }
     
     func closeDetailScreen() {
@@ -79,6 +95,12 @@ extension DetailPresenter: DetailPresenterProtocol {
                     completion(nil)
                 }
             }
+        }
+    }
+    
+    func updateIfNeeded(index: Int) {
+        if index == photos.count - 1, observedNotification == .photosDidUpdate {
+            loadNextPage()
         }
     }
 }

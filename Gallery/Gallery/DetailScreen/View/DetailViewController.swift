@@ -77,7 +77,7 @@ extension DetailViewController: DetailViewProtocol {
 extension DetailViewController: DetailViewCellDelegate {
     
     func likeButtonTapped(for photo: Photo) {
-        presenter.updateLikeStatus(photo: photo, isLiked: photo.isLikedByUser)
+        presenter.updateLikeStatus(photo: photo)
     }
     
     func backButtonTapped() {
@@ -98,9 +98,7 @@ extension DetailViewController: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         
-        if indexPath.item == presenter.photos.count - 1 {
-            presenter.loadNextPage()
-        }
+        presenter.updateIfNeeded(index: indexPath.item)
         
         let id = DetailViewCell.reuseIdentifier
         let reusableCell = collectionView.dequeueReusableCell(withReuseIdentifier: id, for: indexPath)

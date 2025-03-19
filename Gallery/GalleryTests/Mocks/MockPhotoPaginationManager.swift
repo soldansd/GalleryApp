@@ -14,7 +14,7 @@ class MockPhotoPaginationManager: PhotoPaginationManagerProtocol {
     var updateLikeStatusCalled = false
     var getImageResult: Result<Data, Error> = .success(Data())
     
-    var photos: [Gallery.Photo] {
+    var fetchedPhotos: [Gallery.Photo] {
         return [MockPhoto.photo]
     }
     

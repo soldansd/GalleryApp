@@ -35,7 +35,7 @@ final class HeartButton: UIButton {
     func update(isLiked: Bool) {
         self.isLiked = isLiked
         if isLiked {
-            tintColor = .red
+            tintColor = .appTint
             setImage(UIImage(systemName: "heart.fill"), for: .normal)
         } else {
             tintColor = .label

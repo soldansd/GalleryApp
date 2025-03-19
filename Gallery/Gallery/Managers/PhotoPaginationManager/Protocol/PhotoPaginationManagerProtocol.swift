@@ -8,8 +8,9 @@
 import Foundation
 
 protocol PhotoPaginationManagerProtocol {
-    var photos: [Photo] { get }
+    var fetchedPhotos: [Photo] { get }
     func loadNextPage()
-    func updateLikeStatus(photo: Photo, isLiked: Bool)
+    func updateLikeStatus(photo: Photo)
     func getImage(for photo: Photo, completion: @escaping (Result<Data, Error>) -> Void)
+    func initialLoad(_ type: Notification.Name)
 }
