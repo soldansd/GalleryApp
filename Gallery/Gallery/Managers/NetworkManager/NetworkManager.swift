@@ -11,15 +11,13 @@ final class NetworkManager: NetworkManagerProtocol {
     
     // MARK: Properties
     
-    static let shared = NetworkManager()
-    
     private let session: URLSession
     
     private var baseComponents: URLComponents
     
     // MARK: - Init
     
-    private init() {
+    init() {
         let config = URLSessionConfiguration.default
         session = URLSession(configuration: config)
         

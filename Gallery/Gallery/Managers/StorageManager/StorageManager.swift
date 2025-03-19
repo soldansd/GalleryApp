@@ -11,21 +11,20 @@ final class StorageManager: StorageManagerProtocol {
     
     // MARK: - Properties
     
-    static let shared = StorageManager()
-    
     private let fileManager = FileManager.default
     
     private let url: URL
     
     // MARK: - Init
     
-    private init() {
+    init() {
         url = fileManager
             .urls(for: .documentDirectory, in: .userDomainMask)
             .first!
             .appendingPathComponent("ImageStorage")
         
         createDirectoryIfNeeded()
+        print(url)
     }
     
     // MARK: - Methods

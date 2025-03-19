@@ -12,11 +12,13 @@ struct GalleryBuilder {
     // MARK: - Properties
     
     private weak var router: GalleryRouterProtocol?
+    private let photoManager: PhotoPaginationManagerProtocol
     
     // MARK: - Init
     
-    init(router: GalleryRouterProtocol?) {
+    init(router: GalleryRouterProtocol?, photoManager: PhotoPaginationManagerProtocol) {
         self.router = router
+        self.photoManager = photoManager
     }
     
     // MARK: - Methods
@@ -26,7 +28,7 @@ struct GalleryBuilder {
             return UIViewController()
         }
         
-        let presenter = GalleryPresenter(router: router, photoManager: PhotoPaginationManager.shared)
+        let presenter = GalleryPresenter(router: router, photoManager: photoManager)
         let view = GalleryViewController(presenter: presenter)
         presenter.view = view
         

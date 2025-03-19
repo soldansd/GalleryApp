@@ -11,14 +11,16 @@ final class DetailRouter {
     
     // MARK: - Properties
     
-    private lazy var builder = DetailBuilder(router: self)
+    private lazy var builder = DetailBuilder(router: self, photoManager: photoManager)
     
     private weak var navigationController: UINavigationController?
+    private let photoManager: PhotoPaginationManagerProtocol
     
     // MARK: - Init
     
-    init(navigationController: UINavigationController?) {
+    init(navigationController: UINavigationController?, photoManager: PhotoPaginationManagerProtocol) {
         self.navigationController = navigationController
+        self.photoManager = photoManager
     }
 }
 

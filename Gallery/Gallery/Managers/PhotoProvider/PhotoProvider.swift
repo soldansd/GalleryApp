@@ -11,12 +11,6 @@ final class PhotoProvider: PhotoProviderProtocol {
     
     // MARK: - Properties
     
-    static let shared = PhotoProvider(
-        storageManager: StorageManager.shared,
-        cacheManager: CacheManager.shared,
-        networkManager: NetworkManager.shared
-    )
-    
     private let storageManager: StorageManagerProtocol
     private let cacheManager: CacheManagerProtocol
     private let networkManager: NetworkManagerProtocol

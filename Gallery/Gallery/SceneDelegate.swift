@@ -24,8 +24,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
+    
+        let networkManager = NetworkManager()
+        let cahceManager = CacheManager()
+        let storageManager = StorageManager()
+        
+        let photoProvider = PhotoProvider(
+            storageManager: storageManager,
+            cacheManager: cahceManager,
+            networkManager: networkManager
+        )
+        
+        let photoManager = PhotoPaginationManager(photoProvider: photoProvider)
+        
         let navigationController = UINavigationController()
-        let galleryRouter = GalleryRouter(navigationController: navigationController)
+        let galleryRouter = GalleryRouter(
+            navigationController: navigationController,
+            photoManager: photoManager
+        )
         galleryRouter.openGalleryScreen()
         window?.rootViewController = navigationController
         window?.makeKeyAndVisible()

@@ -11,8 +11,6 @@ final class PhotoPaginationManager: PhotoPaginationManagerProtocol {
     
     // MARK: - Properties
     
-    static let shared = PhotoPaginationManager(photoProvider: PhotoProvider.shared)
-    
     private let photoProvider: PhotoProviderProtocol
     private var nextPage = 1
     private var perPage = 30
