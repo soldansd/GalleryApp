@@ -16,7 +16,7 @@ final class DetailPresenter {
     private let photoManager: PhotoManagerProtocol
     let initialPhoto: Photo
     private(set) var photos: [Photo]
-    let observedNotification: Notification.Name
+    private let observedNotification: Notification.Name
     
     // MARK: - Init
     
@@ -65,7 +65,7 @@ final class DetailPresenter {
     // MARK: - Deinit
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .photosDidUpdate, object: nil)
+        NotificationCenter.default.removeObserver(self, name: observedNotification, object: nil)
     }
 }
 
@@ -99,7 +99,7 @@ extension DetailPresenter: DetailPresenterProtocol {
     }
     
     func updateIfNeeded(index: Int) {
-        if index == photos.count - 1, observedNotification == .photosDidUpdate {
+        if index == photos.count - 1, observedNotification == .fetchedPhotosDidUpdate {
             loadNextPage()
         }
     }

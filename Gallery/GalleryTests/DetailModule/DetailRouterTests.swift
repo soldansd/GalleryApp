@@ -20,7 +20,7 @@ final class DetailRouterTests: XCTestCase {
         router = DetailRouter(
             navigationController: mockNavigationController,
             photoManager: mockPhotoManager,
-            observedNotification: .photosDidUpdate
+            observedNotification: .fetchedPhotosDidUpdate
         )
     }
     

@@ -20,7 +20,7 @@ final class GalleryRouterTests: XCTestCase {
         router = GalleryRouter(
             navigationController: mockNavigationController,
             photoManager: mockPhotoManager,
-            observedNotification: .photosDidUpdate
+            observedNotification: .fetchedPhotosDidUpdate
         )
     }
     

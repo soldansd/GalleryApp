@@ -20,7 +20,7 @@ final class DetailBuilderTests: XCTestCase {
         builder = DetailBuilder(
             router: mockRouter,
             photoManager: mockPhotoManager,
-            observedNotification: .photosDidUpdate
+            observedNotification: .fetchedPhotosDidUpdate
         )
     }
     
