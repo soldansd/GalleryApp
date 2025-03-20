@@ -91,6 +91,10 @@ Additionally, both **PhotoProvider** and **PhotoManager** provide the opportunit
 
 ## Demo 📲
 
+
+https://github.com/user-attachments/assets/0d077681-02a2-4cff-a426-f7ce365ab4ac
+
+
 #### **Image Gallery Screen** 📷
 
 <div align="center">
