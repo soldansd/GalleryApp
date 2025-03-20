@@ -11,12 +11,6 @@ final class PhotoProvider: PhotoProviderProtocol {
     
     // MARK: - Properties
     
-    static let shared = PhotoProvider(
-        storageManager: StorageManager.shared,
-        cacheManager: CacheManager.shared,
-        networkManager: NetworkManager.shared
-    )
-    
     private let storageManager: StorageManagerProtocol
     private let cacheManager: CacheManagerProtocol
     private let networkManager: NetworkManagerProtocol
@@ -44,16 +38,26 @@ final class PhotoProvider: PhotoProviderProtocol {
             
             switch result {
             case .success(let photosDTO):
-                
-                let photos = photosDTO.map { dto -> Photo in
-                    var photo = dto.toModel()
-                    if self.storageManager.getData(forKey: "\(photo.id).jpg") != nil {
-                        photo.isLikedByUser = true
-                    }
-                    return photo
-                }
-                
+                let photos = photosDTO.map { self.processPhoto($0) }
                 completion(.success(photos))
+                
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+    
+    func getPhoto(id: String, completion: @escaping (Result<Photo, Error>) -> Void) {
+        
+        networkManager.getPhoto(id: id) { [weak self] result in
+            guard let self else {
+                return
+            }
+            
+            switch result {
+            case .success(let photoDTO):
+                let photo = processPhoto(photoDTO)
+                completion(.success(photo))
                 
             case .failure(let error):
                 completion(.failure(error))
@@ -66,12 +70,12 @@ final class PhotoProvider: PhotoProviderProtocol {
         DispatchQueue.global(qos: .userInteractive).async { [weak self] in
             guard let self else { return }
             
-            if photo.isLikedByUser, let data = storageManager.getData(forKey: "\(photo.id).jpg") {
+            if photo.isLikedByUser, let data = storageManager.getData(forKey: "\(photo.id)") {
                 completion(.success(data))
                 return
             }
             
-            if let data = cacheManager.getData(forKey: "\(photo.id).jpg") {
+            if let data = cacheManager.getData(forKey: "\(photo.id)") {
                 completion(.success(data))
                 return
             }
@@ -82,9 +86,9 @@ final class PhotoProvider: PhotoProviderProtocol {
                 case .success(let data):
                     
                     if photo.isLikedByUser {
-                       try? self.storageManager.saveData(data, forKey: "\(photo.id).jpg")
+                       try? self.storageManager.saveData(data, forKey: "\(photo.id)")
                     } else {
-                        self.cacheManager.saveData(data, forKey: "\(photo.id).jpg")
+                        self.cacheManager.saveData(data, forKey: "\(photo.id)")
                     }
                     
                     completion(.success(data))
@@ -96,13 +100,13 @@ final class PhotoProvider: PhotoProviderProtocol {
         }
     }
     
-    func updateLikeStatus(photo: Photo, isLiked: Bool) {
+    func updateLikeStatus(photo: Photo) {
         
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let self else { return }
-            let key = "\(photo.id).jpg"
+            let key = "\(photo.id)"
             
-            if isLiked {
+            if photo.isLikedByUser {
                 if let data = self.cacheManager.getData(forKey: key) {
                     try? self.storageManager.saveData(data, forKey: key)
                     self.cacheManager.removeData(forKey: key)
@@ -114,5 +118,17 @@ final class PhotoProvider: PhotoProviderProtocol {
                 }
             }
         }
+    }
+    
+    func getAllStoredFileNames() -> [String] {
+        return storageManager.getAllStoredFileNames()
+    }
+    
+    private func processPhoto(_ photoDTO: PhotoDTO) -> Photo {
+        var photo = photoDTO.toModel()
+        if storageManager.getData(forKey: "\(photo.id)") != nil {
+            photo.isLikedByUser = true
+        }
+        return photo
     }
 }

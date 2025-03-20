@@ -10,10 +10,10 @@ import XCTest
 
 final class CacheManagerTests: XCTestCase {
     
-    private var cache = CacheManager.shared
+    private var cache: CacheManager!
 
     override func setUp() {
-        cache.clearCache()
+        cache = CacheManager()
     }
 
     func testSaveAndGetData() {

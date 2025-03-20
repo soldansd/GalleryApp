@@ -12,14 +12,21 @@ final class GalleryRouterTests: XCTestCase {
     
     var mockNavigationController: MockNavigationController!
     var router: GalleryRouter!
+    var mockPhotoManager: MockPhotoManager!
     
     override func setUp() {
         mockNavigationController = MockNavigationController()
-        router = GalleryRouter(navigationController: mockNavigationController)
+        mockPhotoManager = MockPhotoManager()
+        router = GalleryRouter(
+            navigationController: mockNavigationController,
+            photoManager: mockPhotoManager,
+            observedNotification: .photosDidUpdate
+        )
     }
     
     override func tearDown() {
         router = nil
+        mockPhotoManager = nil
         mockNavigationController = nil
     }
     
@@ -33,7 +40,7 @@ final class GalleryRouterTests: XCTestCase {
     func testOpenDetailScreenPushesDetailViewController() {
         let photo = MockPhoto.photo
         
-        router.openDetailScreen(for: photo)
+        router.openDetailScreen(for: photo, photos: [photo])
         
         XCTAssertTrue(mockNavigationController.pushedViewController is DetailViewController)
     }

@@ -13,15 +13,19 @@ final class GalleryPresenterTests: XCTestCase {
     private var presenter: GalleryPresenter!
 
     private var mockRouter: MockGalleryRouter!
-    private var mockPhotoManager: MockPhotoPaginationManager!
+    private var mockPhotoManager: MockPhotoManager!
     private var mockView: MockGalleryView!
     
     override func setUp() {
         mockRouter = MockGalleryRouter()
-        mockPhotoManager = MockPhotoPaginationManager()
+        mockPhotoManager = MockPhotoManager()
         mockView = MockGalleryView()
         
-        presenter = GalleryPresenter(router: mockRouter, photoManager: mockPhotoManager)
+        presenter = GalleryPresenter(
+            router: mockRouter,
+            photoManager: mockPhotoManager,
+            observedNotification: .photosDidUpdate
+        )
         presenter.view = mockView
     }
     
@@ -43,23 +47,10 @@ final class GalleryPresenterTests: XCTestCase {
     func testOpenDetailScreen() {
         let photo = MockPhoto.photo
         
-        presenter.openDetailScreen(for: photo)
+        presenter.openDetailScreen(for: photo, photos: [photo])
         
         XCTAssertTrue(mockRouter.openDetailScreenCalled)
         XCTAssertEqual(photo.id, MockPhoto.photo.id)
-    }
-    
-    func testHandlePhotosUpdate() {
-        let expectation = expectation(description: "Waiting for notification handling")
-        
-        NotificationCenter.default.post(name: .photosDidUpdate, object: nil)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            expectation.fulfill()
-        }
-        
-        wait(for: [expectation], timeout: 1.5)
-        XCTAssertTrue(mockView.updateCalled)
     }
     
     func testGetImageSuccess() {

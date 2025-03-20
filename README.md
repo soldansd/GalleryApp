@@ -53,9 +53,9 @@ The app follows the **MVP (Model-View-Presenter) + Router** architecture, ensuri
 - **Builder** is used to create and configure MVP+R modules in the app. This allows easy construction of the app's screen modules with proper dependencies injected, promoting better separation of concerns and flexibility when adding new features.
 
 
-Presenters in the app use **PhotoPaginationManager** as a **dependency injection**. This ensures that all components of the app work with the same array of images, promoting consistency and preventing data duplication. 
+Presenters in the app use **PhotoManager** as a **dependency injection**. This ensures that all components of the app work with the same arrays of images for fetched photos from pagination and liked photos from storage, promoting consistency and preventing data duplication. 
 
-Additionally, **NotificationCenter** is used to notify presenters (observers) when the **array of photos in PhotoPaginationManager** (observable) has been updated 🔔. This allows presenters to react immediately when new images are loaded, ensuring seamless UI updates.
+Additionally, **NotificationCenter** is used to notify presenters (observers) when the **arrays** (fetched photos from pagination and liked photos from storage) **of photos in PhotoManager** (observable) has been updated 🔔. This allows presenters to react immediately when new images are loaded, ensuring seamless UI updates.
 
 ### **Managers** 🛠️:
 The app uses several **managers** to handle different responsibilities, ensuring modularity and separation of concerns:
@@ -64,11 +64,9 @@ The app uses several **managers** to handle different responsibilities, ensuring
 - **StorageManager**: Responsible for storing and retrieving data locally for the user's favorite images. It uses **FileManager** to save the images to the device's file system.
 - **PhotoProvider**: The PhotoProvider follows the **Repository pattern** by centralizing data access and interacting with multiple data sources, such as NetworkManager, CacheManager, and StorageManager. It manages the retrieval and caching of images, ensuring that liked images are stored locally on the device, newly fetched images are cached appropriately, and network requests are made for new images. Additionally, PhotoProvider adheres to the **Facade pattern**, offering a unified interface for handling multiple subsystems. The PhotoProvider class relies on dependency injection for NetworkManager, CacheManager, and StorageManager to provide its functionality.
 
-- **PhotoPaginationManager**: Manages the pagination of photos, ensuring that images are loaded progressively as the user scrolls through the gallery. It also has **PhotoProvider** as a dependency injection.
+- **PhotoManager**: Manages the pagination of photos, ensuring that images are loaded progressively as the user scrolls through the gallery, and provides liked photos from storage. It also has **PhotoProvider** as a dependency injection.
 
-All managers in the app follow the **Singleton** pattern, ensuring that only one instance of each manager is used throughout the app.
-
-Additionally, both **PhotoProvider** and **PhotoPaginationManager** provide the opportunity to create **custom objects** with provided dependencies.
+Additionally, both **PhotoProvider** and **PhotoManager** provide the opportunity to create **custom objects** with provided dependencies.
 
 ### **Frameworks and Libraries** 🛠️:
 - **UIKit** for building the user interface.
@@ -76,7 +74,7 @@ Additionally, both **PhotoProvider** and **PhotoPaginationManager** provide the 
 - **Grand Central Dispatch (GCD)** for managing asynchronous tasks, ensuring smooth performance by executing network requests, image caching, and storing images locally in the background without blocking the main thread.
 - **NSCache** for caching images to enhance performance.
 - **FileManager** for saving and retrieving images stored locally in the file system.
-- **NotificationCenter** for notifying Presenters (observers) that the array of photos in PhotoPaginationManager (observable) has changed. This allows the UI to stay in sync with the latest data updates.
+- **NotificationCenter** for notifying Presenters (observers) that the arrays of photos (fetched photos from pagination and liked photos from storage) in PhotoManager (observable) has changed. This allows the UI to stay in sync with the latest data updates.
 - **SwiftLintPlugins** for integrating **SwiftLint** into the project to enforce consistent code style and prevent potential issues️.
 
 ### **Unit Tests** 🧪
@@ -94,28 +92,28 @@ Additionally, both **PhotoProvider** and **PhotoPaginationManager** provide the 
 ## Demo 📲
 
 
-https://github.com/user-attachments/assets/6eaad0a5-c0c7-4a78-ad06-e54aad2fd1f3
+https://github.com/user-attachments/assets/0d077681-02a2-4cff-a426-f7ce365ab4ac
 
 
-### **Image Gallery Screen** 📷
+#### **Image Gallery Screen** 📷
 
 <div align="center">
-    <img src="docs/screenshots/GalleryScreen1.png" alt="Screenshot 1" width="320">
-    <img src="docs/screenshots/GalleryScreen2.png" alt="Screenshot 2" width="320">
-    <img src="docs/screenshots/GalleryScreen3.png" alt="Screenshot 3" width="320">
-    <img src="docs/screenshots/GalleryScreen4.png" alt="Screenshot 4" width="320">
-    <img src="docs/screenshots/GalleryScreen5.png" alt="Screenshot 5" width="800">
-    <img src="docs/screenshots/GalleryScreen6.png" alt="Screenshot 6" width="800">
+    <img src="docs/screenshots/GalleryScreen1.png" alt="GalleryScreen1" width="320">
+    <img src="docs/screenshots/GalleryScreen2.png" alt="GalleryScreen2" width="320">
+    <img src="docs/screenshots/GalleryScreen3.png" alt="GalleryScreen3" width="320">
+    <img src="docs/screenshots/GalleryScreen4.png" alt="GalleryScreen4" width="320">
+    <img src="docs/screenshots/GalleryScreen5.png" alt="GalleryScreen5" width="800">
+    <img src="docs/screenshots/GalleryScreen6.png" alt="GalleryScreen6" width="800">
 </div>
 
 ### **Image Detail Screen** 🌅
 
 <div align="center">
-    <img src="docs/screenshots/DetailScreen1.png" alt="Screenshot 1" width="320">
-    <img src="docs/screenshots/DetailScreen2.png" alt="Screenshot 2" width="320">
-    <img src="docs/screenshots/DetailScreen3.png" alt="Screenshot 3" width="800">
-    <img src="docs/screenshots/DetailScreen4.png" alt="Screenshot 4" width="800">
-    <img src="docs/screenshots/DetailScreen5.png" alt="Screenshot 5" width="800">
+    <img src="docs/screenshots/DetailScreen1.png" alt="DetailScreen1" width="320">
+    <img src="docs/screenshots/DetailScreen2.png" alt="DetailScreen2" width="320">
+    <img src="docs/screenshots/DetailScreen3.png" alt="DetailScreen3" width="800">
+    <img src="docs/screenshots/DetailScreen4.png" alt="DetailScreen4" width="800">
+    <img src="docs/screenshots/DetailScreen5.png" alt="DetailScreen5" width="800">
 </div>
 
 ---

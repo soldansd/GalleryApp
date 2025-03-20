@@ -11,11 +11,17 @@ import XCTest
 final class DetailRouterTests: XCTestCase {
 
     var mockNavigationController: MockNavigationController!
+    var mockPhotoManager: MockPhotoManager!
     var router: DetailRouter!
     
     override func setUp() {
         mockNavigationController = MockNavigationController()
-        router = DetailRouter(navigationController: mockNavigationController)
+        mockPhotoManager = MockPhotoManager()
+        router = DetailRouter(
+            navigationController: mockNavigationController,
+            photoManager: mockPhotoManager,
+            observedNotification: .photosDidUpdate
+        )
     }
     
     override func tearDown() {
@@ -25,14 +31,14 @@ final class DetailRouterTests: XCTestCase {
     
     func testOpenDetailScreenPushesDetailViewController() {
         
-        router.openDetailScreen(photo: MockPhoto.photo)
+        router.openDetailScreen(initialPhoto: MockPhoto.photo, photos: [MockPhoto.photo])
         
         XCTAssertTrue(mockNavigationController.pushedViewController is DetailViewController)
     }
     
     func testCloseDetailScreenPopsViewController() {
         
-        router.openDetailScreen(photo: MockPhoto.photo)
+        router.openDetailScreen(initialPhoto: MockPhoto.photo, photos: [MockPhoto.photo])
         router.closeDetailScreen()
         
         XCTAssertNil(mockNavigationController.pushedViewController)

@@ -17,6 +17,8 @@ final class GalleryViewController: UIViewController {
         return view as? GalleryView
     }
     
+    private var lastTransitionSize: CGSize = .zero
+    
     // MARK: - Init
     
     init(presenter: GalleryPresenterProtocol) {
@@ -35,18 +37,19 @@ final class GalleryViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        presenter.loadNextPage()
+        presenter.initialLoad()
         configureGalleryView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        galleryView?.updateNumberOfColumns(to: view.bounds.size)
+        galleryView?.updateNumberOfColumns(to: lastTransitionSize)
     }
     
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
         galleryView?.willTransition(to: size, with: coordinator)
+        lastTransitionSize = size
     }
     
     // MARK: - Methods
@@ -64,6 +67,10 @@ extension GalleryViewController: GalleryViewProtocol {
     
     func update() {
         galleryView?.update()
+    }
+    
+    func reload() {
+        galleryView?.reload()
     }
 }
 
@@ -97,9 +104,7 @@ extension GalleryViewController: UICollectionViewDataSource {
         cellForItemAt indexPath: IndexPath
     ) -> UICollectionViewCell {
         
-        if indexPath.item == presenter.photos.count - 1 {
-            presenter.loadNextPage()
-        }
+        presenter.updateIfNeeded(index: indexPath.item)
         
         let id = GalleryViewCell.reuseIdentifier
         let reusableCell = collectionView.dequeueReusableCell(withReuseIdentifier: id, for: indexPath)
@@ -132,6 +137,6 @@ extension GalleryViewController: UICollectionViewDataSource {
 extension GalleryViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        presenter.openDetailScreen(for: presenter.photos[indexPath.item])
+        presenter.openDetailScreen(for: presenter.photos[indexPath.item], photos: presenter.photos)
     }
 }

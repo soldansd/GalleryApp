@@ -11,13 +11,7 @@ final class CacheManager: CacheManagerProtocol {
     
     // MARK: - Properties
     
-    static let shared = CacheManager()
-    
     private let cache = NSCache<NSString, NSData>()
-    
-    // MARK: - Init
-    
-    private init() {}
     
     // MARK: - Methods
     

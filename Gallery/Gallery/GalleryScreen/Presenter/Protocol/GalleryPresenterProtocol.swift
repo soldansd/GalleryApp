@@ -9,7 +9,9 @@ import Foundation
 
 protocol GalleryPresenterProtocol: AnyObject {
     var photos: [Photo] { get }
+    func initialLoad()
     func loadNextPage()
     func getImage(for photo: Photo, completion: @escaping (Data?) -> Void)
-    func openDetailScreen(for photo: Photo)
+    func openDetailScreen(for photo: Photo, photos: [Photo])
+    func updateIfNeeded(index: Int)
 }

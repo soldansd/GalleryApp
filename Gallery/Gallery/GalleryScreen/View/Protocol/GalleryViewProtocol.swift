@@ -7,4 +7,5 @@
 
 protocol GalleryViewProtocol: AnyObject {
     func update()
+    func reload()
 }

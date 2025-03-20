@@ -11,21 +11,20 @@ final class StorageManager: StorageManagerProtocol {
     
     // MARK: - Properties
     
-    static let shared = StorageManager()
-    
     private let fileManager = FileManager.default
     
     private let url: URL
     
     // MARK: - Init
     
-    private init() {
+    init() {
         url = fileManager
             .urls(for: .documentDirectory, in: .userDomainMask)
             .first!
             .appendingPathComponent("ImageStorage")
         
         createDirectoryIfNeeded()
+        print(url)
     }
     
     // MARK: - Methods
@@ -43,6 +42,23 @@ final class StorageManager: StorageManagerProtocol {
     func removeData(forKey key: String) throws {
         let filePath = url.appendingPathComponent(key)
         try fileManager.removeItem(at: filePath)
+    }
+    
+    func getAllStoredFileNames() -> [String] {
+        var storedFileNames: [String] = []
+        
+        do {
+            let filePaths = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
+            
+            for filePath in filePaths {
+                guard filePath.lastPathComponent.first != "." else { continue }
+                storedFileNames.append(filePath.lastPathComponent)
+            }
+        } catch {
+            print("Failed to get stored files: \(error)")
+        }
+        
+        return storedFileNames
     }
     
     private func createDirectoryIfNeeded() {

@@ -9,6 +9,8 @@ import Foundation
 
 protocol PhotoProviderProtocol {
     func getListPhotos(page: Int, perPage: Int, completion: @escaping (Result<[Photo], Error>) -> Void)
+    func getPhoto(id: String, completion: @escaping (Result<Photo, Error>) -> Void)
     func getImage(for photo: Photo, completion: @escaping (Result<Data, Error>) -> Void)
-    func updateLikeStatus(photo: Photo, isLiked: Bool)
+    func updateLikeStatus(photo: Photo)
+    func getAllStoredFileNames() -> [String]
 }

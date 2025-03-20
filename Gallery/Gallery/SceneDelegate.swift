@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Swinject
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
@@ -24,10 +25,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
-        let navigationController = UINavigationController()
-        let galleryRouter = GalleryRouter(navigationController: navigationController)
-        galleryRouter.openGalleryScreen()
-        window?.rootViewController = navigationController
+    
+        let networkManager = NetworkManager()
+        
+        let cahceManager = CacheManager()
+        let storageManager = StorageManager()
+        
+        let photoProvider = PhotoProvider(
+            storageManager: storageManager,
+            cacheManager: cahceManager,
+            networkManager: networkManager
+        )
+        
+        let photoManager = PhotoManager(photoProvider: photoProvider)
+        
+        let tabBarController = GalleryTabBarController(photoManager: photoManager)
+        
+        window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
     }
     

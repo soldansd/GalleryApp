@@ -13,13 +13,20 @@ final class GalleryPresenter {
     
     weak var view: GalleryViewProtocol?
     private let router: GalleryRouterProtocol
-    private let photoManager: PhotoPaginationManagerProtocol
+    private let photoManager: PhotoManagerProtocol
+    private(set) var photos: [Photo] = []
+    private let observedNotification: Notification.Name
     
     // MARK: - Init
     
-    init(router: GalleryRouterProtocol, photoManager: PhotoPaginationManagerProtocol) {
+    init(
+        router: GalleryRouterProtocol,
+        photoManager: PhotoManagerProtocol,
+        observedNotification: Notification.Name
+    ) {
         self.router = router
         self.photoManager = photoManager
+        self.observedNotification = observedNotification
         observeDataUpdates()
     }
     
@@ -29,13 +36,18 @@ final class GalleryPresenter {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(handlePhotosUpdate(_:)),
-            name: .photosDidUpdate,
+            name: observedNotification,
             object: nil
         )
     }
     
     @objc private func handlePhotosUpdate(_ notification: Notification) {
+        guard let fetchedPhotos = notification.object as? [Photo] else { return }
+        self.photos = fetchedPhotos
         DispatchQueue.main.async { [weak self] in
+            if self?.observedNotification == .likedPhotosDidUpdate {
+                self?.view?.reload()
+            }
             self?.view?.update()
         }
     }
@@ -43,7 +55,7 @@ final class GalleryPresenter {
     // MARK: - Deinit
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .photosDidUpdate, object: nil)
+        NotificationCenter.default.removeObserver(self, name: observedNotification, object: nil)
     }
 }
 
@@ -51,16 +63,16 @@ final class GalleryPresenter {
 
 extension GalleryPresenter: GalleryPresenterProtocol {
     
-    var photos: [Photo] {
-        photoManager.photos
+    func initialLoad() {
+        photoManager.initialLoad(observedNotification)
     }
     
     func loadNextPage() {
         photoManager.loadNextPage()
     }
     
-    func openDetailScreen(for photo: Photo) {
-        router.openDetailScreen(for: photo)
+    func openDetailScreen(for photo: Photo, photos: [Photo]) {
+        router.openDetailScreen(for: photo, photos: photos)
     }
     
     func getImage(for photo: Photo, completion: @escaping (Data?) -> Void) {
@@ -73,6 +85,12 @@ extension GalleryPresenter: GalleryPresenterProtocol {
                     completion(nil)
                 }
             }
+        }
+    }
+    
+    func updateIfNeeded(index: Int) {
+        if index == photos.count - 1, observedNotification == .photosDidUpdate {
+            loadNextPage()
         }
     }
 }

@@ -11,15 +11,28 @@ final class GalleryRouter {
     
     // MARK: - Properties
     
-    private lazy var builder = GalleryBuilder(router: self)
+    private lazy var builder = GalleryBuilder(
+        router: self,
+        photoManager: photoManager,
+        observedNotification: observedNotification
+    )
     
     private weak var navigationController: UINavigationController?
     
+    private let photoManager: PhotoManagerProtocol
+    private let observedNotification: Notification.Name
+    
     // MARK: - Init
     
-    init(navigationController: UINavigationController?) {
+    init(
+        navigationController: UINavigationController?,
+        photoManager: PhotoManagerProtocol,
+        observedNotification: Notification.Name
+    ) {
         self.navigationController = navigationController
         self.navigationController?.isNavigationBarHidden = true
+        self.photoManager = photoManager
+        self.observedNotification = observedNotification
     }
 }
 
@@ -32,8 +45,12 @@ extension GalleryRouter: GalleryRouterProtocol {
         navigationController?.pushViewController(view, animated: true)
     }
     
-    func openDetailScreen(for photo: Photo) {
-        let router = DetailRouter(navigationController: navigationController)
-        router.openDetailScreen(photo: photo)
+    func openDetailScreen(for initialPhoto: Photo, photos: [Photo]) {
+        let router = DetailRouter(
+            navigationController: navigationController,
+            photoManager: photoManager,
+            observedNotification: observedNotification
+        )
+        router.openDetailScreen(initialPhoto: initialPhoto, photos: photos)
     }
 }

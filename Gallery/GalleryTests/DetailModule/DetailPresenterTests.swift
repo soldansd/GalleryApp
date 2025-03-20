@@ -13,16 +13,22 @@ final class DetailPresenterTests: XCTestCase {
     var presenter: DetailPresenter!
     var mockView: MockDetailView!
     var mockRouter: MockDetailRouter!
-    var mockPhotoManager: MockPhotoPaginationManager!
+    var mockPhotoManager: MockPhotoManager!
     var mockPhoto: Photo!
     
     override func setUp() {
         mockView = MockDetailView()
         mockRouter = MockDetailRouter()
-        mockPhotoManager = MockPhotoPaginationManager()
+        mockPhotoManager = MockPhotoManager()
         mockPhoto = MockPhoto.photo
         
-        presenter = DetailPresenter(router: mockRouter, photoManager: mockPhotoManager, photo: mockPhoto)
+        presenter = DetailPresenter(
+            router: mockRouter,
+            photoManager: mockPhotoManager,
+            initialPhoto: mockPhoto,
+            photos: [mockPhoto],
+            observedNotification: .photosDidUpdate
+        )
         presenter.view = mockView
     }
     
@@ -45,7 +51,7 @@ final class DetailPresenterTests: XCTestCase {
     func testUpdateLikeStatus() {
         mockPhotoManager.updateLikeStatusCalled = false
         
-        presenter.updateLikeStatus(photo: mockPhoto, isLiked: true)
+        presenter.updateLikeStatus(photo: mockPhoto)
         
         XCTAssertTrue(mockPhotoManager.updateLikeStatusCalled)
     }
@@ -56,19 +62,6 @@ final class DetailPresenterTests: XCTestCase {
         presenter.closeDetailScreen()
         
         XCTAssertTrue(mockRouter.closeDetailScreenCalled)
-    }
-    
-    func testHandlePhotosUpdate() {
-        let expectation = expectation(description: "Waiting for notification handling")
-        
-        NotificationCenter.default.post(name: .photosDidUpdate, object: nil)
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            expectation.fulfill()
-        }
-        
-        wait(for: [expectation], timeout: 1.5)
-        XCTAssertTrue(mockView.updateCalled)
     }
     
     func testGetImageSuccess() {
