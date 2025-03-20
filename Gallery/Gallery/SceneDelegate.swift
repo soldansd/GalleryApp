@@ -25,10 +25,9 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: windowScene)
     
-        let networkManager = NetworkManager()
-        
-        let cahceManager = CacheManager()
         let storageManager = StorageManager()
+        let cahceManager = CacheManager()
+        let networkManager = NetworkManager()
         
         let photoProvider = PhotoProvider(
             storageManager: storageManager,

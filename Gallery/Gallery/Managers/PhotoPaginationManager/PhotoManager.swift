@@ -29,7 +29,7 @@ final class PhotoManager: PhotoManagerProtocol {
     
     func initialLoad(_ type: Notification.Name) {
         switch type {
-        case .photosDidUpdate:
+        case .fetchedPhotosDidUpdate:
             loadNextPage()
         case .likedPhotosDidUpdate:
             loadLikedPhotos()
@@ -120,6 +120,6 @@ final class PhotoManager: PhotoManagerProtocol {
     }
     
     private func notifyFetchedPhotosObservers() {
-        NotificationCenter.default.post(name: .photosDidUpdate, object: fetchedPhotos)
+        NotificationCenter.default.post(name: .fetchedPhotosDidUpdate, object: fetchedPhotos)
     }
 }

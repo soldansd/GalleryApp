@@ -37,7 +37,7 @@ final class GalleryTabBarController: UITabBarController {
         let galleryRouter = GalleryRouter(
             navigationController: galleryNavigationController,
             photoManager: photoManager,
-            observedNotification: .photosDidUpdate
+            observedNotification: .fetchedPhotosDidUpdate
         )
         
         let favouriteNavigationController = UINavigationController()

@@ -24,7 +24,7 @@ final class GalleryPresenterTests: XCTestCase {
         presenter = GalleryPresenter(
             router: mockRouter,
             photoManager: mockPhotoManager,
-            observedNotification: .photosDidUpdate
+            observedNotification: .fetchedPhotosDidUpdate
         )
         presenter.view = mockView
     }

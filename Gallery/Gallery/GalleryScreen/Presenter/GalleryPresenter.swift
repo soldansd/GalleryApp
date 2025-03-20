@@ -89,7 +89,7 @@ extension GalleryPresenter: GalleryPresenterProtocol {
     }
     
     func updateIfNeeded(index: Int) {
-        if index == photos.count - 1, observedNotification == .photosDidUpdate {
+        if index == photos.count - 1, observedNotification == .fetchedPhotosDidUpdate {
             loadNextPage()
         }
     }

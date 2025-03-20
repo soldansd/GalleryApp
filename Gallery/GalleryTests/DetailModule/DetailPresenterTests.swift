@@ -27,7 +27,7 @@ final class DetailPresenterTests: XCTestCase {
             photoManager: mockPhotoManager,
             initialPhoto: mockPhoto,
             photos: [mockPhoto],
-            observedNotification: .photosDidUpdate
+            observedNotification: .fetchedPhotosDidUpdate
         )
         presenter.view = mockView
     }

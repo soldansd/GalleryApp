@@ -20,7 +20,7 @@ final class GalleryBuilderTests: XCTestCase {
         builder = GalleryBuilder(
             router: mockRouter,
             photoManager: mockPhotoManager,
-            observedNotification: .photosDidUpdate
+            observedNotification: .fetchedPhotosDidUpdate
         )
     }
     

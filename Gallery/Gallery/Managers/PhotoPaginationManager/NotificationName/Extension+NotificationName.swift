@@ -8,6 +8,6 @@
 import Foundation
 
 extension Notification.Name {
-    static let photosDidUpdate = Notification.Name("photosDidUpdate")
+    static let fetchedPhotosDidUpdate = Notification.Name("fetchedPhotosDidUpdate")
     static let likedPhotosDidUpdate = Notification.Name("likedPhotosDidUpdate")
 }
