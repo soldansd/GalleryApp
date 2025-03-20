@@ -53,6 +53,7 @@ final class WaterfallLayout: UICollectionViewLayout {
     }
     
     func reloadLayout() {
+        contentHeight = 0
         previousCountOfElements = 0
         attributes = []
         lastAttributesForColumn = Array(repeating: nil, count: numberOfColumns)
