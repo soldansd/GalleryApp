@@ -12,14 +12,21 @@ final class GalleryBuilderTests: XCTestCase {
     
     var builder: GalleryBuilder!
     var mockRouter: MockGalleryRouter!
+    var mockPhotoManager: MockPhotoManager!
     
     override func setUp() {
         mockRouter = MockGalleryRouter()
-        builder = GalleryBuilder(router: mockRouter)
+        mockPhotoManager = MockPhotoManager()
+        builder = GalleryBuilder(
+            router: mockRouter,
+            photoManager: mockPhotoManager,
+            observedNotification: .photosDidUpdate
+        )
     }
     
     override func tearDown() {
         builder = nil
+        mockPhotoManager = nil
         mockRouter = nil
     }
     

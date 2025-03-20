@@ -7,12 +7,12 @@
 
 @testable import Gallery
 
-class MockDetailRouter: DetailRouterProtocol {
-    
+final class MockDetailRouter: DetailRouterProtocol {
+        
     var openDetailScreenCalled = false
     var closeDetailScreenCalled = false
     
-    func openDetailScreen(photo: Gallery.Photo) {
+    func openDetailScreen(initialPhoto: Photo, photos: [Photo]) {
         openDetailScreenCalled = true
     }
     

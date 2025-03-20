@@ -8,12 +8,12 @@
 @testable import Gallery
 
 final class MockGalleryRouter: GalleryRouterProtocol {
-    
+        
     var openDetailScreenCalled = false
     var photoPassedToRouter: Photo?
     
-    func openDetailScreen(for photo: Gallery.Photo) {
+    func openDetailScreen(for initialPhoto: Photo, photos: [Photo]) {
         openDetailScreenCalled = true
-        photoPassedToRouter = photo
+        photoPassedToRouter = initialPhoto
     }
 }

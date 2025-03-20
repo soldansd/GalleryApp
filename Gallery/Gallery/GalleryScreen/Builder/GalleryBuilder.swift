@@ -12,6 +12,7 @@ struct GalleryBuilder {
     // MARK: - Properties
     
     private weak var router: GalleryRouterProtocol?
+    
     private let photoManager: PhotoManagerProtocol
     private let observedNotification: Notification.Name
     

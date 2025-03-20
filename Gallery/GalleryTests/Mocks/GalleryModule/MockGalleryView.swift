@@ -10,6 +10,11 @@
 final class MockGalleryView: GalleryViewProtocol {
     
     var updateCalled = false
+    var reloadCalled = false
+    
+    func reload() {
+        reloadCalled = true
+    }
     
     func update() {
         updateCalled = true

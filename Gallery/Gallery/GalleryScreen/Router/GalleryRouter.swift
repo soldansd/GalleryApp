@@ -16,10 +16,11 @@ final class GalleryRouter {
         photoManager: photoManager,
         observedNotification: observedNotification
     )
-    private let photoManager: PhotoManagerProtocol
-    private let observedNotification: Notification.Name
     
     private weak var navigationController: UINavigationController?
+    
+    private let photoManager: PhotoManagerProtocol
+    private let observedNotification: Notification.Name
     
     // MARK: - Init
     
@@ -44,12 +45,12 @@ extension GalleryRouter: GalleryRouterProtocol {
         navigationController?.pushViewController(view, animated: true)
     }
     
-    func openDetailScreen(for photo: Photo, photos: [Photo]) {
+    func openDetailScreen(for initialPhoto: Photo, photos: [Photo]) {
         let router = DetailRouter(
             navigationController: navigationController,
             photoManager: photoManager,
             observedNotification: observedNotification
         )
-        router.openDetailScreen(photo: photo, photos: photos)
+        router.openDetailScreen(initialPhoto: initialPhoto, photos: photos)
     }
 }

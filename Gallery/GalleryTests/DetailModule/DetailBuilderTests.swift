@@ -12,19 +12,26 @@ final class DetailBuilderTests: XCTestCase {
 
     var builder: DetailBuilder!
     var mockRouter: MockDetailRouter!
+    var mockPhotoManager: MockPhotoManager!
     
     override func setUp() {
         mockRouter = MockDetailRouter()
-        builder = DetailBuilder(router: mockRouter)
+        mockPhotoManager = MockPhotoManager()
+        builder = DetailBuilder(
+            router: mockRouter,
+            photoManager: mockPhotoManager,
+            observedNotification: .photosDidUpdate
+        )
     }
     
     override func tearDown() {
         builder = nil
+        mockPhotoManager = nil
         mockRouter = nil
     }
     
     func testAssemblyReturnsGalleryViewController() {
-        let viewController = builder.assembly(photo: MockPhoto.photo)
+        let viewController = builder.assembly(initialPhoto: MockPhoto.photo, photos: [MockPhoto.photo])
         
         XCTAssertTrue(viewController is DetailViewController)
     }

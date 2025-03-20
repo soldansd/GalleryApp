@@ -18,6 +18,7 @@ final class DetailRouter {
     )
     
     private weak var navigationController: UINavigationController?
+    
     private let photoManager: PhotoManagerProtocol
     private let observedNotification: Notification.Name
     
@@ -38,8 +39,8 @@ final class DetailRouter {
 
 extension DetailRouter: DetailRouterProtocol {
     
-    func openDetailScreen(photo: Photo, photos: [Photo]) {
-        let view = builder.assembly(photo: photo, photos: photos)
+    func openDetailScreen(initialPhoto: Photo, photos: [Photo]) {
+        let view = builder.assembly(initialPhoto: initialPhoto, photos: photos)
         navigationController?.tabBarController?.tabBar.isHidden = true
         navigationController?.pushViewController(view, animated: true)
     }

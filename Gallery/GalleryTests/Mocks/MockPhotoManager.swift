@@ -8,11 +8,16 @@
 import Foundation
 @testable import Gallery
 
-class MockPhotoPaginationManager: PhotoManagerProtocol {
+class MockPhotoManager: PhotoManagerProtocol {
     
+    var initialLoadCalled = false
     var loadNextPageCalled = false
     var updateLikeStatusCalled = false
     var getImageResult: Result<Data, Error> = .success(Data())
+    
+    func initialLoad(_ type: Notification.Name) {
+        initialLoadCalled = true
+    }
     
     var fetchedPhotos: [Gallery.Photo] {
         return [MockPhoto.photo]
@@ -22,7 +27,7 @@ class MockPhotoPaginationManager: PhotoManagerProtocol {
         loadNextPageCalled = true
     }
     
-    func updateLikeStatus(photo: Gallery.Photo, isLiked: Bool) {
+    func updateLikeStatus(photo: Gallery.Photo) {
         updateLikeStatusCalled = true
     }
     

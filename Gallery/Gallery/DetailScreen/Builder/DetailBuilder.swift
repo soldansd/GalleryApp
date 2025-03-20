@@ -12,6 +12,7 @@ struct DetailBuilder {
     // MARK: - Properties
     
     private weak var router: DetailRouterProtocol?
+    
     private let photoManager: PhotoManagerProtocol
     private let observedNotification: Notification.Name
     
@@ -29,7 +30,7 @@ struct DetailBuilder {
     
     // MARK: - Methods
     
-    func assembly(photo: Photo, photos: [Photo]) -> UIViewController {
+    func assembly(initialPhoto: Photo, photos: [Photo]) -> UIViewController {
         guard let router else {
             return UIViewController()
         }
@@ -37,7 +38,7 @@ struct DetailBuilder {
         let presenter = DetailPresenter(
             router: router,
             photoManager: photoManager,
-            initialPhoto: photo,
+            initialPhoto: initialPhoto,
             photos: photos,
             observedNotification: observedNotification
         )

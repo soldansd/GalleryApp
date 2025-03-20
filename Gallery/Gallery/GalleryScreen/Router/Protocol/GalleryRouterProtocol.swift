@@ -6,5 +6,5 @@
 //
 
 protocol GalleryRouterProtocol: AnyObject {
-    func openDetailScreen(for photo: Photo, photos: [Photo])
+    func openDetailScreen(for initialPhoto: Photo, photos: [Photo])
 }
