@@ -24,7 +24,6 @@ final class StorageManager: StorageManagerProtocol {
             .appendingPathComponent("ImageStorage")
         
         createDirectoryIfNeeded()
-        print(url)
     }
     
     // MARK: - Methods
