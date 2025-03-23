@@ -13,18 +13,16 @@ struct GalleryBuilder {
     
     private weak var router: GalleryRouterProtocol?
     
-    private let photoManager: PhotoManagerProtocol
+    private let photoManager: PhotoManagerProtocol = DIContainer.resolve()
     private let observedNotification: Notification.Name
     
     // MARK: - Init
     
     init(
         router: GalleryRouterProtocol?,
-        photoManager: PhotoManagerProtocol,
         observedNotification: Notification.Name
     ) {
         self.router = router
-        self.photoManager = photoManager
         self.observedNotification = observedNotification
     }
     

@@ -24,20 +24,24 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: windowScene)
-    
-        let storageManager = StorageManager()
-        let cahceManager = CacheManager()
-        let networkManager = NetworkManager()
         
-        let photoProvider = PhotoProvider(
-            storageManager: storageManager,
-            cacheManager: cahceManager,
-            networkManager: networkManager
-        )
+        DIContainer.register(StorageManagerProtocol.self) { StorageManager() }
+        DIContainer.register(CacheManagerProtocol.self) { CacheManager() }
+        DIContainer.register(NetworkManagerProtocol.self) { NetworkManager() }
         
-        let photoManager = PhotoManager(photoProvider: photoProvider)
+        DIContainer.register(PhotoProviderProtocol.self) {
+            PhotoProvider(
+                storageManager: DIContainer.resolve(),
+                cacheManager: DIContainer.resolve(),
+                networkManager: DIContainer.resolve()
+            )
+        }
         
-        let tabBarController = GalleryTabBarController(photoManager: photoManager)
+        DIContainer.register(PhotoManagerProtocol.self) {
+            PhotoManager(photoProvider: DIContainer.resolve())
+        }
+        
+        let tabBarController = GalleryTabBarController()
         
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()

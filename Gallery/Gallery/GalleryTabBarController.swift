@@ -9,14 +9,9 @@ import UIKit
 
 final class GalleryTabBarController: UITabBarController {
     
-    // MARK: - Properties
-    
-    private let photoManager: PhotoManagerProtocol
-    
     // MARK: - Init
     
-    init(photoManager: PhotoManagerProtocol) {
-        self.photoManager = photoManager
+    init() {
         super.init(nibName: nil, bundle: nil)
         setupTabs()
     }
@@ -36,7 +31,6 @@ final class GalleryTabBarController: UITabBarController {
         
         let galleryRouter = GalleryRouter(
             navigationController: galleryNavigationController,
-            photoManager: photoManager,
             observedNotification: .fetchedPhotosDidUpdate
         )
         
@@ -49,7 +43,6 @@ final class GalleryTabBarController: UITabBarController {
         
         let favouriteRouter = GalleryRouter(
             navigationController: favouriteNavigationController,
-            photoManager: photoManager,
             observedNotification: .likedPhotosDidUpdate
         )
         

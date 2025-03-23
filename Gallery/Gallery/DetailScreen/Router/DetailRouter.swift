@@ -13,24 +13,20 @@ final class DetailRouter {
     
     private lazy var builder = DetailBuilder(
         router: self,
-        photoManager: photoManager,
         observedNotification: observedNotification
     )
     
     private weak var navigationController: UINavigationController?
     
-    private let photoManager: PhotoManagerProtocol
     private let observedNotification: Notification.Name
     
     // MARK: - Init
     
     init(
         navigationController: UINavigationController?,
-        photoManager: PhotoManagerProtocol,
         observedNotification: Notification.Name
     ) {
         self.navigationController = navigationController
-        self.photoManager = photoManager
         self.observedNotification = observedNotification
     }
 }

@@ -13,18 +13,16 @@ struct DetailBuilder {
     
     private weak var router: DetailRouterProtocol?
     
-    private let photoManager: PhotoManagerProtocol
+    private let photoManager: PhotoManagerProtocol = DIContainer.resolve()
     private let observedNotification: Notification.Name
     
     // MARK: - Init
     
     init(
         router: DetailRouterProtocol?,
-        photoManager: PhotoManagerProtocol,
         observedNotification: Notification.Name
     ) {
         self.router = router
-        self.photoManager = photoManager
         self.observedNotification = observedNotification
     }
     
